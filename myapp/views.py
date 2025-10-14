@@ -1,78 +1,52 @@
 from django.shortcuts import render, redirect
-from .models import User, Asset
-from .forms import RegisterForm, LoginForm, AssetForm
 
+from django.contrib.auth.decorators import login_required
 
-def register(request):
-    if request.method == 'POST':
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login')
-    else:
-        form = RegisterForm()
-    return render(request, 'register.html', {'form': form})
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.contrib.auth.models import User
+
+# Create your views here.
 
 
 def login_view(request):
+
+
+    if not User.objects.filter(username='admin').exists():
+        User.objects.create_superuser(username='admin', password='12345678', email='admin@example.com')
+        print("Admin user created")
+
+
     if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            try:
-                user = User.objects.get(email=email, password=password)
-                request.session['user_id'] = user.id
-                request.session['user_role'] = user.role
-                if user.role == 'Admin':
-                    return redirect('admin_dashboard')
-                else:
-                    return redirect('user_dashboard')
-            except User.DoesNotExist:
-                return render(request, 'login.html', {'form': form, 'error': 'Invalid credentials'})
-    else:
-        form = LoginForm()
-    return render(request, 'login.html', {'form': form})
+        username = request.POST['username']
+        password = request.POST['password']
 
-def logout_view(request):
-    request.session.flush()
-    return redirect('login')
+        user = authenticate(request, username=username, password=password)
 
+        if user is not None:
+            login(request, user)
+            
 
-def admin_dashboard(request):
-    if 'user_id' not in request.session:
-        return redirect('login')
-    user = User.objects.get(id=request.session['user_id'])
-    if user.role != 'Admin':
-        return redirect('user_dashboard')
-    assets = Asset.objects.all()
-    return render(request, 'admin_dashboard.html', {'user': user, 'assets': assets})
-
-
-
-
-def user_dashboard(request):
-    if 'user_id' not in request.session:
-        return redirect('login')
-    user = User.objects.get(id=request.session['user_id'])
-    assets = Asset.objects.filter(created_by=user)
-    return render(request, 'user_dashboard.html', {'user': user, 'assets': assets})
-
-def create_asset(request):
-    if 'user_id' not in request.session:
-        return redirect('login')
-    user = User.objects.get(id=request.session['user_id'])
-    if request.method == 'POST':
-        form = AssetForm(request.POST)
-        if form.is_valid():
-            asset = form.save(commit=False)
-            asset.created_by = user
-            asset.save()
-            if user.role == 'Admin':
+            
+            if username == 'admin' and password == '12345678':
+                messages.success(request, "Welcome Admin! Login successful.")
                 return redirect('admin_dashboard')
             else:
                 return redirect('user_dashboard')
-    else:
-        form = AssetForm()
-    return render(request, 'create_asset.html', {'form': form})
+        else:
+            messages.error(request, "Invalid username or password.")
+
+    return render(request, 'login.html')
+
+
+
+@login_required
+def admin_dashboard(request):
+    return render(request, 'admin_dashboard.html')
+
+@login_required
+def user_dashboard(request):
+    return render(request, 'user_dashboard.html')
+
+
 
