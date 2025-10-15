@@ -49,4 +49,9 @@ def user_dashboard(request):
     return render(request, 'user_dashboard.html')
 
 
+def usermanagement(request):
+    users = User.objects.all().order_by('id')  # admin will be the first user (id=1)
+    return render(request, 'usermanagement.html',{})
+
+
 
