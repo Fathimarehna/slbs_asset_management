@@ -11241,3 +11241,14 @@ body {
   font-size: 0.75rem;
   border-radius: 0.375rem !important;
 }
+
+
+.bg-pink-100 {
+    background-color: #FCE7F3; /* Tailwind pink-100 color */
+}
+
+
+#layoutSidenav {
+    display: flex;
+    height: 100%; /* make parent take full height */
+}

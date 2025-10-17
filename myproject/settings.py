@@ -78,7 +78,7 @@ DATABASES = {
         'ENGINE': 'mysql.connector.django',
         'NAME': 'slbs_db',
          'USER':'root',
-         'PASSWORD':'root@123',
+         'PASSWORD':'root',
          'HOST':'localhost',
          'PORT':'3306',
     }
@@ -109,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
