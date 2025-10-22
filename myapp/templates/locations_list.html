@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<h1 class="text-dark text-center fw-bold  mt-5">Locations</h1>
+<br>
+
+
+<div class="text-end px-4">
+    <a href="{% url 'locations_create' %}" class="btn btn-danger">Add New Locations</a>
+    <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Back</a>
+</div>
+<br>
+<br>
+
+<table border="1" class="table table-secondary table-striped mx-auto" style="width: 1000px;">
+    <tr>
+        <th>ID</th>
+        <th>Location</th>
+        <th>Status</th>
+        <th>Created Date</th>
+        <th>Updated Date</th>
+        <th>Actions</th>
+        
+    </tr>
+
+
+
+
+    
+    {% for location in locations %}
+    <tr>
+        <td>{{ location.id }}</td>
+        <td>{{ location.location }}</td>
+
+
+        <td>
+            
+            {% if location.status %}
+                Active
+            {% else %}
+                Inactive
+            {% endif %}
+        </td>
+
+
+        <td>{{ location.created_date }}</td>
+        <td>{{ location.updated_date }}</td>
+        <td>
+                <a href="{% url 'locations_update' location.id %}" class="btn btn-sm btn-primary">Edit</a>
+
+
+                {% if location.status %}
+                <!-- If active, show Soft Delete button -->
+                <a href="{% url 'toggle_locations_status' location.id %}" class="btn btn-sm btn-warning">Deactivate</a>
+                {% else %}
+                <!-- If inactive, show Activate button -->
+                <a href="{% url 'toggle_locations_status' location.id %}" class="btn btn-sm btn-success">Activate</a>
+                {% endif %}
+
+                <a href="{% url 'locations_delete' location.id %}" class="btn btn-sm btn-danger">Delete</a>
+
+                
+            </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

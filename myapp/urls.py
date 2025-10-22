@@ -22,6 +22,27 @@ urlpatterns = [
     path('categories/update/<int:pk>/', views.category_update, name='category_update'),
     path('categories/delete/<int:pk>/', views.category_delete, name='category_delete'),   
     path('category/toggle/<int:pk>/', views.toggle_category_status, name='toggle_category_status'),
+
+
+    path('subcategories/', views.subcategory_list, name='subcategory_list'),
+    path('subcategories/create/', views.subcategory_create, name='subcategory_create'),
+    path('subcategories/update/<int:pk>/', views.subcategory_update, name='subcategory_update'),
+    path('subcategories/delete/<int:pk>/', views.subcategory_delete, name='subcategory_delete'),   
+    path('subcategory/toggle/<int:pk>/', views.toggle_subcategory_status, name='toggle_subcategory_status'),
+
+
+    path('departments/', views.departments_list, name='departments_list'),
+    path('departments/create/', views.departments_create, name='departments_create'),
+    path('departments/update/<int:pk>/', views.departments_update, name='departments_update'),
+    path('departments/delete/<int:pk>/', views.departments_delete, name='departments_delete'),   
+    path('departments/toggle/<int:pk>/', views.toggle_departments_status, name='toggle_departments_status'),
+
+
+    path('locations/', views.locations_list, name='locations_list'),
+    path('locations/create/', views.locations_create, name='locations_create'),
+    path('locations/update/<int:pk>/', views.locations_update, name='locations_update'),
+    path('locations/delete/<int:pk>/', views.locations_delete, name='locations_delete'),   
+    path('locations/toggle/<int:pk>/', views.toggle_locations_status, name='toggle_locations_status'),
 ]
 
     

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5" style="width: 600px;">
+    <div class="card shadow border-0">
+        <div class="card-body text-center p-5">
+            <h4>Are you sure you want to delete <strong>{{ subcategory.title }}</strong>?</h4>
+            <form method="POST" class="mt-4">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger px-4 me-3">Yes, Delete</button>
+                <a href="{% url 'subcategory_list' %}" class="btn btn-secondary px-4">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

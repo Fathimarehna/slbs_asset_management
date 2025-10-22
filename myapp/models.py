@@ -32,3 +32,24 @@ class SubCategory(models.Model):
     def __str__(self):
         return self.title
 
+
+class Department(models.Model):
+    title=models.CharField(max_length=100)
+    status=models.BooleanField(default=True)
+    created_date=models.DateTimeField(auto_now_add=True)
+    updated_date=models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+class Location(models.Model):
+    location=models.CharField(max_length=100)
+    status=models.BooleanField(default=True)
+    created_date=models.DateTimeField(auto_now_add=True)
+    updated_date=models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.location
+
+
+

@@ -9,7 +9,12 @@ from . models import Asset
 from .forms import AssetForm
 from .models import Category
 from .forms import CategoryForm
-
+from . models import SubCategory
+from .forms import SubCategoryForm
+from .models import Department
+from .forms import DepartmentForm
+from .models import Location
+from .forms import LocationForm
 # Create your views here.
 
 
@@ -137,6 +142,147 @@ def toggle_category_status(request, pk):
     category.status = not category.status  # Toggle between active/inactive
     category.save()
     return redirect('category_list')
+
+#subcategory
+
+def subcategory_list(request):
+    subcategories = SubCategory.objects.all()
+    return render(request, 'subcategory.html', {'subcategories': subcategories})
+
+def subcategory_create(request):
+    if request.method == 'POST':
+        form = SubCategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('subcategory_list')
+    else:
+        form = CategoryForm()
+    return render(request, 'subcategoryform.html', {'form': form})
+
+
+def subcategory_update(request, pk):
+    subcategory = get_object_or_404(SubCategory, pk=pk)
+    if request.method == 'POST':
+        form =  SubCategoryForm(request.POST, instance=subcategory)
+        if form.is_valid():
+            form.save()
+            return redirect('subcategory_list')
+    else:
+        form = SubCategoryForm(instance=subcategory)
+    return render(request, 'subcategoryform.html', {'form': form})
+
+
+def subcategory_delete(request, pk):
+    subcategory = get_object_or_404(SubCategory, pk=pk)
+    if request.method == 'POST':
+        subcategory.delete()
+        return redirect('subcategory_list')
+    return render(request, 'subcategory_confirm_delete.html', {'subcategory': subcategory})
+
+
+def toggle_subcategory_status(request, pk):
+    subcategory = get_object_or_404(SubCategory, pk=pk)
+    subcategory.status = not subcategory.status  # Toggle between active/inactive
+    subcategory.save()
+    return redirect('subcategory_list')
+
+
+
+
+#departmentviews
+
+def departments_list(request):
+    departments=Department.objects.all()
+    return render(request, 'departmentslist.html', {'departments': departments})
+    
+
+def departments_create(request):
+    if request.method == 'POST':
+        form = DepartmentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('departments_list')
+    else:
+        form = DepartmentForm()
+    return render(request, 'departmentsform.html', {'form': form})
+
+
+def departments_update(request, pk):
+
+    departments = get_object_or_404(Department, pk=pk)
+    if request.method == 'POST':
+        form =  DepartmentForm(request.POST, instance=departments)
+        if form.is_valid():
+            form.save()
+            return redirect('departments_list')
+    else:
+        form = DepartmentForm(instance=departments)
+    return render(request, 'departmentsform.html', {'form': form})
+
+
+def departments_delete(request, pk):
+    departments = get_object_or_404(Department, pk=pk)
+    if request.method == 'POST':
+        departments.delete()
+        return redirect('departments_list')
+    return render(request, 'department_confirm_delete.html', {'departments': departments})
+
+
+def toggle_departments_status(request, pk):
+    departments = get_object_or_404(Department, pk=pk)
+    departments.status = not departments.status  # Toggle between active/inactive
+    departments.save()
+    return redirect('departments_list')
+
+
+#locationsview
+
+def locations_list(request):
+    locations=Location.objects.all()
+    return render(request, 'locations_list.html', {'locations': locations})
+    
+
+def locations_create(request):
+    if request.method == 'POST':
+        form = LocationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('locations_list')
+    else:
+        form = DepartmentForm()
+    return render(request, 'locationsform.html', {'form': form})
+
+
+def locations_update(request, pk):
+
+    locations = get_object_or_404(Location, pk=pk)
+    if request.method == 'POST':
+        form =  LocationForm(request.POST, instance=locations)
+        if form.is_valid():
+            form.save()
+            return redirect('locations_list')
+    else:
+        form = LocationForm(instance=locations)
+    return render(request, 'locationsform.html', {'form': form})
+
+
+def locations_delete(request, pk):
+    locations = get_object_or_404(Location, pk=pk)
+    if request.method == 'POST':
+        locations.delete()
+        return redirect('locations_list')
+    return render(request, 'location_confirm_delete.html', {'locations': locations})
+
+
+def toggle_locations_status(request, pk):
+    locations = get_object_or_404(Location, pk=pk)
+    locations.status = not locations.status  # Toggle between active/inactive
+    locations.save()
+    return redirect('locations_list')
+
+
+
+
 
 
 
