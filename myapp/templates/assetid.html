@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<h1 class="text-dark text-center fw-bold  mt-5">Asset Management</h1>
+<br>
+
+
+<div class="text-end px-4">
+    <a href="{% url 'asset_create' %}" class="btn btn-danger">Add New Asset</a>
+    <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Back</a>
+</div>
+<br>
+<br>
+
+<table border="1" class="table table-dark table-striped mx-auto" style="width: 1000px;">
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Status</th>
+        <th>Created</th>
+        <th>Updated</th>
+        <th>Actions</th>
+    </tr>
+    {% for asset in assets %}
+    <tr>
+        <td>{{ asset.id }}</td>
+        <td>{{ asset.title }}</td>
+
+
+        <td>
+            
+            {% if asset.status %}
+                Active
+            {% else %}
+                Inactive
+            {% endif %}
+        </td>
+
+
+        <td>{{ asset.created_date }}</td>
+        <td>{{ asset.updated_date }}</td>
+        <td>
+                <a href="{% url 'asset_update' asset.id %}" class="btn btn-sm btn-primary">Edit</a>
+
+
+                {% if asset.status %}
+                <!-- If active, show Soft Delete button -->
+                <a href="{% url 'toggle_asset_status' asset.id %}" class="btn btn-sm btn-warning">Deactivate</a>
+                {% else %}
+                <!-- If inactive, show Activate button -->
+                <a href="{% url 'toggle_asset_status' asset.id %}" class="btn btn-sm btn-success">Activate</a>
+                {% endif %}
+
+                <a href="{% url 'asset_delete' asset.id %}" class="btn btn-sm btn-danger">Delete</a>
+
+                
+            </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

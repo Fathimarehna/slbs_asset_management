@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h3 class="fw-bold text-center fs-1">Users List</h3>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        
+        </div>
+
+
+        
+<div class="text-end px-4">
+    <a href="{% url 'users_list' %}" class="btn btn-danger">Add Users</a>
+    <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Back</a>
+</div>
+<br>
+<br>
+
+        
+   
+    
+
+    <table class="table table-dark table-striped mx-auto" style="width: 1000px;">
+
+        <thead class="">
+            <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Password</th>
+                <th>Created date</th>
+                <th>Updated date</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in categories %}
+            <tr>
+                <td>{{ category.id }}</td>
+                <td>{{ category.title }}</td>
+                <td>{{ category.asset.title }}</td>
+                <td>
+                    
+                    {% if category.status %}
+                             Active
+                          {% else %}
+                            Inactive
+                          {% endif %}
+
+                </td>
+                <td>{{ category.created_date }}</td>
+                <td>{{ category.updated_date }}</td>
+                <td>
+
+                    
+                <a href="{% url 'category_update' category.id %}" class="btn btn-sm btn-primary">Edit</a>
+
+                {% if category.status %}
+                <!-- If active, show Soft Delete button -->
+                <a href="{% url 'toggle_category_status' category.id %}" class="btn btn-sm btn-warning">Deactivate</a>
+                {% else %}
+                <!-- If inactive, show Activate button -->
+                <a href="{% url 'toggle_category_status' category.id %}" class="btn btn-sm btn-success">Activate</a>
+                {% endif %}
+
+                <a href="{% url 'category_delete' category.id %}" class="btn btn-sm btn-danger">Delete</a>
+
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7" class="text-center">No users available.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
