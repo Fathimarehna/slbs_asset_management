@@ -5,6 +5,8 @@ from .models import Category
 from .models import SubCategory
 from .models import Department
 from .models import Location
+from .models import User
+
 class AssetForm(forms.ModelForm):
     class Meta:
         model=Asset
@@ -35,6 +37,11 @@ class LocationForm(forms.ModelForm):
         model=Location
         fields=['location']
    
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['name', 'role', 'password']
 
    
 

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container mt-5">
-    <h3 class="fw-bold text-center fs-1">Category List</h3>
+    <h3 class="fw-bold text-center fs-1">Users List</h3>
     <div class="d-flex justify-content-between align-items-center mb-3">
         
         </div>
@@ -9,7 +9,7 @@
 
         
 <div class="text-end px-4">
-    <a href="{% url 'category_create' %}" class="btn btn-danger">Add Category</a>
+    <a href="{% url 'users_list' %}" class="btn btn-danger">Add Users</a>
     <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Back</a>
 </div>
 <br>
@@ -19,17 +19,16 @@
    
     
 
-    <table class="table table-secondary table-striped mx-auto" style="width: 1000px;">
+    <table class="table table-dark table-striped mx-auto" style="width: 1000px;">
 
         <thead class="">
             <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Asset</th>
-                <th>Status</th>
-                <th>Created</th>
-                <th>Updated</th>
-                <th>Actions</th>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Password</th>
+                <th>Created date</th>
+                <th>Updated date</th>
+                
             </tr>
         </thead>
         <tbody>
@@ -67,7 +66,7 @@
                 </td>
             </tr>
             {% empty %}
-            <tr><td colspan="7" class="text-center">No categories available.</td></tr>
+            <tr><td colspan="7" class="text-center">No users available.</td></tr>
             {% endfor %}
         </tbody>
     </table>

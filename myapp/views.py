@@ -15,6 +15,8 @@ from .models import Department
 from .forms import DepartmentForm
 from .models import Location
 from .forms import LocationForm
+from django.utils import timezone
+
 # Create your views here.
 
 
@@ -98,8 +100,6 @@ def toggle_asset_status(request, pk):
     asset.status = not asset.status  # Toggle between active/inactive
     asset.save()
     return redirect('assetid')
-
-
 
 def category_list(request):
     categories = Category.objects.select_related('asset').all()
@@ -286,6 +286,81 @@ def toggle_locations_status(request, pk):
 
 
 
+from .forms import UserForm
+
+def create_user(request):
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('user_list')  # redirect to user list page
+    else:
+        form = UserForm()
+    return render(request, 'create_user.html', {'form': form})
+
+
+def toggle_user_status(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    user.status = not user.status  # Toggle between active/inactive
+    user.save()
+    return redirect('user')
+
+
+def users_list(request):
+    users = User.objects.all()
+    return render(request, 'users_list.html', {'users': users})
+
+def user_update(request, pk):
+    category = get_object_or_404(User, pk=pk)
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            return redirect('users_list')
+    else:
+        form = CategoryForm(instance=category)
+    return render(request, 'user_form.html', {'form': form})
+
+
+def user_delete(request, pk):
+    users = get_object_or_404(User, pk=pk)
+    if request.method == 'POST':
+       users.delete()
+       return redirect('users_list') 
+    return render(request, 'user_confirm_delete.html', {'users': users})
+
+def users_view(request):
+    users = User.objects.all()
+    return render(request, 'users.html', {'users': users})
+
+def add_user(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        User.objects.create_user(username=username, email=email, password=password)
+        return redirect('users')
+    return render(request, 'add_user.html')
+
+def edit_user(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.method == 'POST':
+        user.username = request.POST.get('username')
+        user.email = request.POST.get('email')
+        # optional: change password if provided
+        new_password = request.POST.get('password')
+        if new_password:
+            user.set_password(new_password)
+        # update the date
+        user.last_login = timezone.now()
+        user.save()
+        return redirect('users')
+    return render(request, 'edit_user.html', {'user': user})
+
+def delete_user(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    user.delete()
+    return redirect('users')
 
 
 

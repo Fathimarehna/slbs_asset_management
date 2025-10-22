@@ -14,6 +14,7 @@ urlpatterns = [
     path('assets/update/<int:pk>/', views.asset_update, name='asset_update'),
     path('assets/delete/<int:pk>/', views.asset_delete, name='asset_delete'),
     path('asset/toggle/<int:pk>/', views.toggle_asset_status, name='toggle_asset_status'),
+
     
 
 
@@ -43,6 +44,11 @@ urlpatterns = [
     path('locations/update/<int:pk>/', views.locations_update, name='locations_update'),
     path('locations/delete/<int:pk>/', views.locations_delete, name='locations_delete'),   
     path('locations/toggle/<int:pk>/', views.toggle_locations_status, name='toggle_locations_status'),
+   
+    path('users/', views.users_view, name='users'),
+    path('add_user/', views.add_user, name='add_user'),
+    path('edit_user/<int:user_id>/', views.edit_user, name='edit_user'),
+    path('delete_user/<int:user_id>/', views.delete_user, name='delete_user'),
 ]
 
     
