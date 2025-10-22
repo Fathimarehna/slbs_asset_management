@@ -249,7 +249,7 @@ def locations_create(request):
             form.save()
             return redirect('locations_list')
     else:
-        form = DepartmentForm()
+        form = LocationForm()
     return render(request, 'locationsform.html', {'form': form})
 
 
