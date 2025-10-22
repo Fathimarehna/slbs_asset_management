@@ -156,7 +156,7 @@ def subcategory_create(request):
             form.save()
             return redirect('subcategory_list')
     else:
-        form = CategoryForm()
+        form = SubCategoryForm()
     return render(request, 'subcategoryform.html', {'form': form})
 
 
