@@ -52,7 +52,7 @@ def login_view(request):
                 messages.success(request, "Welcome Admin! Login successful.")
                 return redirect('admin_dashboard')
             else:
-                login()
+               
                 return redirect('user_dashboard')
         else:
             messages.error(request, "Invalid username or password.")
@@ -394,4 +394,20 @@ def assetformcreate(request):
         form=AssetCreateForm()
     return render(request,'assetformcreate.html',{'form':form})
 
+def assetform_update(request,pk):
+    
+    asset = get_object_or_404(AssetCreate, pk=pk)
+    if request.method == 'POST':
+        form =  AssetCreateForm(request.POST, instance=asset)
+        if form.is_valid():
+            form.save()
+            return redirect('assetlist')
+    else:
+        form = AssetCreateForm(instance=asset)
+    return render(request, 'assetlist.html', {'form': form})
 
+
+# def assetform_delete():
+
+# def assetform_details():
+    

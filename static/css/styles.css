@@ -11270,18 +11270,10 @@ body {
     color: #ffffff; /* white on hover */
     text-decoration: underline;
 }
-
-/* 
-.login-bg {
-  background-image: url('assets/assetfront.jpg'); /* relative to static/css/ */
-  /* background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  height: 100vh;
-} */ 
+ 
 
 body {
-    background: url("/static/assets/assetfront.jpg") no-repeat center center fixed;
+    background: url("/static/assets/background.jpeg") no-repeat center center fixed;
     background-size: cover;
-    height: 100vh;
+    height: 100%;
 }

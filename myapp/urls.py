@@ -53,9 +53,9 @@ urlpatterns = [
 
     path('assetform/', views.assetformlist, name='assetlist'),
     path('assets/assetform', views.assetformcreate, name='assetformcreatepage'),
-    # path('departments/update/<int:pk>/', views.departments_update, name='departments_update'),
-    # path('departments/delete/<int:pk>/', views.departments_delete, name='departments_delete'),   
-    # path('departments/toggle/<int:pk>/', views.toggle_departments_status, name='toggle_departments_status'),
+    path('assetform/update/<int:pk>/', views.assetform_update, name='assetform_update'),
+    # path('assetform/delete/<int:pk>/', views.assetform_delete, name='assetform_delete'),   
+    # path('assetform/details/<int:pk>/', views.assetform_details, name='assetform_details'),
 
 ]
 

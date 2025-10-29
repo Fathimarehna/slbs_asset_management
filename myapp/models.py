@@ -93,6 +93,7 @@ class AssetCreate(models.Model):
     warrenty_expiry=models.DateField()
     condition=models.CharField(max_length=10,choices=CONDITION_CHOICES)
     remarks=models.TextField(max_length=100)
+    status=models.BooleanField(default=True)
 
 
 
