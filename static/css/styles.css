@@ -11281,9 +11281,7 @@ body {
 } */ 
 
 body {
-  background-image: url("../assetfront.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  height: 100vh;
+    background: url("/static/assets/assetfront.jpg") no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
 }
