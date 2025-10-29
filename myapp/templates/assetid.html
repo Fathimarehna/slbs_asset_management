@@ -43,7 +43,7 @@
         <td>{{ asset.created_date }}</td>
         <td>{{ asset.updated_date }}</td>
         <td>
-                <a href="{% url 'asset_update' asset.id %}" class="btn btn-sm btn-primary">Edit</a>
+                <a href="{% url 'asset_update' asset.id %}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i>Edit</a>
 
 
                 {% if asset.status %}
@@ -54,7 +54,7 @@
                 <a href="{% url 'toggle_asset_status' asset.id %}" class="btn btn-sm btn-success">Activate</a>
                 {% endif %}
 
-                <a href="{% url 'asset_delete' asset.id %}" class="btn btn-sm btn-danger">Delete</a>
+                <a href="{% url 'asset_delete' asset.id %}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i>Delete</a>
 
                 
             </td>

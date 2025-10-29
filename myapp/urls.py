@@ -49,6 +49,14 @@ urlpatterns = [
     path('add_user/', views.add_user, name='add_user'),
     path('edit_user/<int:user_id>/', views.edit_user, name='edit_user'),
     path('delete_user/<int:user_id>/', views.delete_user, name='delete_user'),
+
+
+    path('assetform/', views.assetformlist, name='assetlist'),
+    path('assets/assetform', views.assetformcreate, name='assetformcreatepage'),
+    # path('departments/update/<int:pk>/', views.departments_update, name='departments_update'),
+    # path('departments/delete/<int:pk>/', views.departments_delete, name='departments_delete'),   
+    # path('departments/toggle/<int:pk>/', views.toggle_departments_status, name='toggle_departments_status'),
+
 ]
 
     

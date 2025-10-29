@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
        
@@ -67,3 +68,31 @@ class User(models.Model):
 
     def __str__(self):
         return self.name
+
+
+# class CustomUser(AbstractUser):
+#     ROLE_CHOICES=[('admin','Admin'),('user','User')]
+#     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
+#     phone = models.CharField(max_length=15, blank=True, null=True)
+
+#     def __str__(self):
+#         return self.username
+
+
+class AssetCreate(models.Model):
+    CONDITION_CHOICES=[('Good','Good'),('Fair','Fair'),('Poor','Poor')]
+    category=models.ForeignKey('Category',on_delete=models.CASCADE)
+    subcategory=models.ForeignKey('SubCategory',on_delete=models.CASCADE)
+    assetname=models.CharField(max_length=50)
+    description=models.CharField(max_length=100)
+    make=models.CharField(max_length=50)
+    location=models.ForeignKey('Location',on_delete=models.CASCADE)
+    assigned_to=models.CharField(max_length=50)
+    department=models.ForeignKey('Department',on_delete=models.CASCADE)
+    purchase_date=models.DateField()
+    warrenty_expiry=models.DateField()
+    condition=models.CharField(max_length=10,choices=CONDITION_CHOICES)
+    remarks=models.TextField(max_length=100)
+
+
+
