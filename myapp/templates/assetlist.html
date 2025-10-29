@@ -35,8 +35,8 @@
 
 
 <td><a href="" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i>Show Details</a></td>
-        <td><a href="" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i>Edit</a>
-            <a href="" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i>Delete</a>
+        <td><a href="{% url 'assetform_update' asset.id %}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i>Edit</a>
+            <a href="{% url 'assetform_delete' asset.id %}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i>Delete</a>
 </td>
 
         

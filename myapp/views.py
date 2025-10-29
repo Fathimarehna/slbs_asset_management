@@ -338,12 +338,12 @@ def user_update(request, pk):
     return render(request, 'user_form.html', {'form': form})
 
 
-def user_delete(request, pk):
-    users = get_object_or_404(User, pk=pk)
-    if request.method == 'POST':
-       users.delete()
-       return redirect('users_list') 
-    return render(request, 'user_confirm_delete.html', {'users': users})
+# def user_delete(request, pk):
+#     users = get_object_or_404(User, pk=pk)
+#     if request.method == 'POST':
+#        users.delete()
+#        return redirect('users_list') 
+#     return render(request, 'user_confirm_delete.html', {'users': users})
 
 def users_view(request):
     users = User.objects.all()
@@ -404,10 +404,16 @@ def assetform_update(request,pk):
             return redirect('assetlist')
     else:
         form = AssetCreateForm(instance=asset)
-    return render(request, 'assetlist.html', {'form': form})
+    return render(request, 'assetformcreate.html', {'form': form})
 
 
-# def assetform_delete():
+def assetform_delete(request,pk):
+    asset = get_object_or_404(AssetCreate, pk=pk)
+    if request.method == 'POST':
+       asset.delete()
+       return redirect('assetlist') 
+    return render(request, 'assetformconfirm_delete.html', {'asset': asset})
+
 
 # def assetform_details():
     
