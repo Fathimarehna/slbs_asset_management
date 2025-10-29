@@ -62,9 +62,18 @@ def user_dashboard(request):
 
 
 def assetid(request):
+    # assets = Asset.objects.all()
+    # return render(request, 'assetid.html', {'assets': assets})
     assets = Asset.objects.all()
-    return render(request, 'assetid.html', {'assets': assets})
+    form = AssetForm()
 
+    if request.method == 'POST':
+        form = AssetForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('assetid')  # refresh page after submission
+
+    return render(request, 'assetid.html', {'assets': assets, 'form': form})
 
 def asset_create(request):
     if request.method == 'POST':
@@ -156,7 +165,7 @@ def subcategory_create(request):
             form.save()
             return redirect('subcategory_list')
     else:
-        form = CategoryForm()
+        form = SubCategoryForm()
     return render(request, 'subcategoryform.html', {'form': form})
 
 
@@ -249,7 +258,7 @@ def locations_create(request):
             form.save()
             return redirect('locations_list')
     else:
-        form = DepartmentForm()
+        form = LocationForm()
     return render(request, 'locationsform.html', {'form': form})
 
 
