@@ -52,7 +52,7 @@
                 <td>
 
                     
-                <a href="{% url 'category_update' category.id %}" class="btn btn-sm btn-primary">Edit</a>
+                <a href="{% url 'category_update' category.id %}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i>Edit</a>
 
                 {% if category.status %}
                 <!-- If active, show Soft Delete button -->
@@ -62,7 +62,7 @@
                 <a href="{% url 'toggle_category_status' category.id %}" class="btn btn-sm btn-success">Activate</a>
                 {% endif %}
 
-                <a href="{% url 'category_delete' category.id %}" class="btn btn-sm btn-danger">Delete</a>
+                <a href="{% url 'category_delete' category.id %}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i>Delete</a>
 
                 </td>
             </tr>

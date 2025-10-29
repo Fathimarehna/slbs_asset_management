@@ -49,7 +49,7 @@
         <td>{{ location.created_date }}</td>
         <td>{{ location.updated_date }}</td>
         <td>
-                <a href="{% url 'locations_update' location.id %}" class="btn btn-sm btn-primary">Edit</a>
+                <a href="{% url 'locations_update' location.id %}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i> Edit</a>
 
 
                 {% if location.status %}
@@ -60,7 +60,7 @@
                 <a href="{% url 'toggle_locations_status' location.id %}" class="btn btn-sm btn-success">Activate</a>
                 {% endif %}
 
-                <a href="{% url 'locations_delete' location.id %}" class="btn btn-sm btn-danger">Delete</a>
+                <a href="{% url 'locations_delete' location.id %}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i>Delete</a>
 
                 
             </td>

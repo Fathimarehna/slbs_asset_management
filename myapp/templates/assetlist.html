@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<h1 class="text-dark text-center fw-bold  mt-5">Asset details</h1>
+<br>
+
+
+<div class="text-end px-4">
+    <a href="{% url 'assetformcreatepage' %}" class="btn btn-danger">Add New Asset</a>
+    <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Back</a>
+</div>
+<br>
+<br>
+
+<table border="1" class="table table-secondary table-striped mx-auto" style="width: 1000px;">
+    <tr>
+        <th>ID</th>
+        <th>Category</th>
+        <th>Sub Category</th>
+        
+    </tr>
+    {% for asset in assets %}
+    <tr>
+        <td>{{ asset.id }}</td>
+        <td>{{ asset.category }}</td>
+        <td>{{ asset.subcategory }}</td>
+
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

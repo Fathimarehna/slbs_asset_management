@@ -16,6 +16,11 @@ from .forms import DepartmentForm
 from .models import Location
 from .forms import LocationForm
 from django.utils import timezone
+from . models import AssetCreate
+from .forms import AssetCreateForm
+
+
+from django.contrib import messages
 
 # Create your views here.
 
@@ -32,6 +37,10 @@ def login_view(request):
         username = request.POST['username']
         password = request.POST['password']
 
+        if username != username.lower():
+            messages.error(request, "Invalid username/password")
+            return redirect('login')
+
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
@@ -43,6 +52,7 @@ def login_view(request):
                 messages.success(request, "Welcome Admin! Login successful.")
                 return redirect('admin_dashboard')
             else:
+                login()
                 return redirect('user_dashboard')
         else:
             messages.error(request, "Invalid username or password.")
@@ -295,7 +305,7 @@ def toggle_locations_status(request, pk):
 
 
 
-from .forms import UserForm
+# from .forms import UserForm
 
 def create_user(request):
     if request.method == 'POST':
@@ -315,19 +325,16 @@ def toggle_user_status(request, pk):
     return redirect('user')
 
 
-def users_list(request):
-    users = User.objects.all()
-    return render(request, 'users_list.html', {'users': users})
 
 def user_update(request, pk):
-    category = get_object_or_404(User, pk=pk)
+    user = get_object_or_404(User, pk=pk)
     if request.method == 'POST':
-        form = UserForm(request.POST, instance=category)
+        form = UserForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
             return redirect('users_list')
     else:
-        form = CategoryForm(instance=category)
+        form = UserForm(instance=user)
     return render(request, 'user_form.html', {'form': form})
 
 
@@ -371,5 +378,20 @@ def delete_user(request, user_id):
     user.delete()
     return redirect('users')
 
+
+
+def assetformlist(request):
+    assets=AssetCreate.objects.all()
+    return render(request, 'assetlist.html', {'assets': assets})
+
+def assetformcreate(request):
+    if request.method=='POST':
+        form=AssetCreateForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('assetlist')
+    else:
+        form=AssetCreateForm()
+    return render(request,'assetformcreate.html',{'form':form})
 
 

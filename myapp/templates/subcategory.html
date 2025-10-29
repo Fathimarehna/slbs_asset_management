@@ -19,6 +19,7 @@
     <tr>
         <th>ID</th>
         <th>Title</th>
+        <th>Category</th>
         <th>Status</th>
         <th>Created</th>
         <th>Updated</th>
@@ -28,6 +29,7 @@
     <tr>
         <td>{{ subcategory.id }}</td>
         <td>{{ subcategory.title }}</td>
+        <td>{{ subcategory.category.title}}</td>
 
 
         <td>
@@ -43,10 +45,10 @@
         <td>{{ subcategory.created_date }}</td>
         <td>{{ subcategory.updated_date }}</td>
         <td>
-                <a href="{% url 'subcategory_update' subcategory.id %}" class="btn btn-sm btn-primary">Edit</a>
+                <a href="{% url 'subcategory_update' subcategory.id %}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i>Edit</a>
 
 
-                {% if asset.status %}
+                {% if subcategory.status %}
                 <!-- If active, show Soft Delete button -->
                 <a href="{% url 'toggle_subcategory_status' subcategory.id %}" class="btn btn-sm btn-warning">Deactivate</a>
                 {% else %}
@@ -54,7 +56,7 @@
                 <a href="{% url 'toggle_subcategory_status' subcategory.id %}" class="btn btn-sm btn-success">Activate</a>
                 {% endif %}
 
-                <a href="{% url 'subcategory_delete' subcategory.id %}" class="btn btn-sm btn-danger">Delete</a>
+                <a href="{% url 'subcategory_delete' subcategory.id %}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i>Delete</a>
 
                 
             </td>

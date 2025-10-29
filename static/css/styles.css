@@ -11254,5 +11254,39 @@ body {
 }
 
 
+<<<<<<< HEAD
 
 
+=======
+.footer {
+    border-top: 1px solid #444; /* subtle top border */
+    font-size: 0.9rem;
+}
+
+.footer a {
+    color: #adb5bd; /* light gray links */
+    transition: color 0.2s;
+}
+
+.footer a:hover {
+    color: #ffffff; /* white on hover */
+    text-decoration: underline;
+}
+
+/* 
+.login-bg {
+  background-image: url('assets/assetfront.jpg'); /* relative to static/css/ */
+  /* background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100vh;
+} */ 
+
+body {
+  background-image: url("../assetfront.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100vh;
+}
+>>>>>>> 0d47c07f1a81d160a41c451aaa760a9a1471961b
