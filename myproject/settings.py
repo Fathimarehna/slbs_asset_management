@@ -79,7 +79,7 @@ DATABASES = {
         'ENGINE': 'mysql.connector.django',
         'NAME': 'slbs_db',
          'USER':'root',
-         'PASSWORD':'root@123',
+         'PASSWORD':'root',
          'HOST':'localhost',
          'PORT':'3306',
     }
