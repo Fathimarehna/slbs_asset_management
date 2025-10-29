@@ -28,33 +28,6 @@
         <td>{{ asset.category }}</td>
         <td>{{ asset.subcategory }}</td>
 
-<!-- 
-        <td>
-            
-            {% if department.status %}
-                Active
-            {% else %}
-                Inactive
-            {% endif %}
-        </td> -->
-
-
-        <!-- <td>
-                <a href="{% url 'departments_update' department.id %}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i>Edit</a>
-
-
-                {% if department.status %}
-                
-                <a href="{% url 'toggle_departments_status' department.id %}" class="btn btn-sm btn-warning">Deactivate</a>
-                {% else %}
-                
-                <a href="{% url 'toggle_departments_status' department.id %}" class="btn btn-sm btn-success">Activate</a>
-                {% endif %}
-
-                <a href="{% url 'departments_delete' department.id %}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i>Delete</a>
-
-                
-            </td> -->
     </tr>
     {% endfor %}
 </table>
