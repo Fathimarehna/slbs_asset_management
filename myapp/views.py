@@ -74,6 +74,7 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
+@login_required
 
 def assetid(request):
     # assets = Asset.objects.all()
@@ -89,6 +90,8 @@ def assetid(request):
 
     return render(request, 'assetid.html', {'assets': assets, 'form': form})
 
+
+@login_required
 def asset_create(request):
     if request.method == 'POST':
         form = AssetForm(request.POST)
@@ -99,6 +102,7 @@ def asset_create(request):
         form = AssetForm()
     return render(request, 'asset_form.html', {'form': form})
 
+@login_required
 def asset_update(request, pk):
     asset = get_object_or_404(Asset, pk=pk)
     if request.method == 'POST':
@@ -110,7 +114,7 @@ def asset_update(request, pk):
         form = AssetForm(instance=asset)
     return render(request, 'asset_form.html', {'form': form})
 
-
+@login_required
 def asset_delete(request, pk):
     asset = get_object_or_404(Asset, pk=pk)
     if request.method == 'POST':
@@ -118,17 +122,21 @@ def asset_delete(request, pk):
         return redirect('assetid')
     return render(request, 'assetconfirmdelete.html', {'asset': asset})
 
+
+@login_required
 def toggle_asset_status(request, pk):
     asset = get_object_or_404(Asset, pk=pk)
     asset.status = not asset.status  # Toggle between active/inactive
     asset.save()
     return redirect('assetid')
 
+@login_required
 def category_list(request):
     categories = Category.objects.select_related('asset').all()
     return render(request, 'category_list.html', {'categories': categories})
 
 
+@login_required
 def category_create(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -140,7 +148,7 @@ def category_create(request):
     return render(request, 'category_form.html', {'form': form})
 
 
-
+@login_required
 def category_update(request, pk):
     category = get_object_or_404(Category, pk=pk)
     if request.method == 'POST':
@@ -152,6 +160,8 @@ def category_update(request, pk):
         form = CategoryForm(instance=category)
     return render(request, 'category_form.html', {'form': form})
 
+
+@login_required
 def category_delete(request, pk):
     category = get_object_or_404(Category, pk=pk)
     if request.method == 'POST':
@@ -159,7 +169,7 @@ def category_delete(request, pk):
         return redirect('category_list')
     return render(request, 'category_confirm_delete.html', {'category': category})
 
-
+@login_required
 def toggle_category_status(request, pk):
     category = get_object_or_404(Category, pk=pk)
     category.status = not category.status  # Toggle between active/inactive
@@ -167,11 +177,12 @@ def toggle_category_status(request, pk):
     return redirect('category_list')
 
 #subcategory
-
+@login_required
 def subcategory_list(request):
     subcategories = SubCategory.objects.all()
     return render(request, 'subcategory.html', {'subcategories': subcategories})
 
+@login_required
 def subcategory_create(request):
     if request.method == 'POST':
         form = SubCategoryForm(request.POST)
@@ -182,7 +193,7 @@ def subcategory_create(request):
         form = SubCategoryForm()
     return render(request, 'subcategoryform.html', {'form': form})
 
-
+@login_required
 def subcategory_update(request, pk):
     subcategory = get_object_or_404(SubCategory, pk=pk)
     if request.method == 'POST':
@@ -194,7 +205,7 @@ def subcategory_update(request, pk):
         form = SubCategoryForm(instance=subcategory)
     return render(request, 'subcategoryform.html', {'form': form})
 
-
+@login_required
 def subcategory_delete(request, pk):
     subcategory = get_object_or_404(SubCategory, pk=pk)
     if request.method == 'POST':
@@ -202,7 +213,7 @@ def subcategory_delete(request, pk):
         return redirect('subcategory_list')
     return render(request, 'subcategory_confirm_delete.html', {'subcategory': subcategory})
 
-
+@login_required
 def toggle_subcategory_status(request, pk):
     subcategory = get_object_or_404(SubCategory, pk=pk)
     subcategory.status = not subcategory.status  # Toggle between active/inactive
@@ -213,12 +224,12 @@ def toggle_subcategory_status(request, pk):
 
 
 #departmentviews
-
+@login_required
 def departments_list(request):
     departments=Department.objects.all()
     return render(request, 'departmentslist.html', {'departments': departments})
     
-
+@login_required
 def departments_create(request):
     if request.method == 'POST':
         form = DepartmentForm(request.POST)
@@ -229,9 +240,8 @@ def departments_create(request):
         form = DepartmentForm()
     return render(request, 'departmentsform.html', {'form': form})
 
-
+@login_required
 def departments_update(request, pk):
-
     departments = get_object_or_404(Department, pk=pk)
     if request.method == 'POST':
         form =  DepartmentForm(request.POST, instance=departments)
@@ -242,7 +252,7 @@ def departments_update(request, pk):
         form = DepartmentForm(instance=departments)
     return render(request, 'departmentsform.html', {'form': form})
 
-
+@login_required
 def departments_delete(request, pk):
     departments = get_object_or_404(Department, pk=pk)
     if request.method == 'POST':
@@ -250,7 +260,7 @@ def departments_delete(request, pk):
         return redirect('departments_list')
     return render(request, 'department_confirm_delete.html', {'departments': departments})
 
-
+@login_required
 def toggle_departments_status(request, pk):
     departments = get_object_or_404(Department, pk=pk)
     departments.status = not departments.status  # Toggle between active/inactive
@@ -259,12 +269,12 @@ def toggle_departments_status(request, pk):
 
 
 #locationsview
-
+@login_required
 def locations_list(request):
     locations=Location.objects.all()
     return render(request, 'locations_list.html', {'locations': locations})
     
-
+@login_required
 def locations_create(request):
     if request.method == 'POST':
         form = LocationForm(request.POST)
@@ -275,7 +285,7 @@ def locations_create(request):
         form = LocationForm()
     return render(request, 'locationsform.html', {'form': form})
 
-
+@login_required
 def locations_update(request, pk):
 
     locations = get_object_or_404(Location, pk=pk)
@@ -289,6 +299,7 @@ def locations_update(request, pk):
     return render(request, 'locationsform.html', {'form': form})
 
 
+@login_required
 def locations_delete(request, pk):
     locations = get_object_or_404(Location, pk=pk)
     if request.method == 'POST':
@@ -296,7 +307,7 @@ def locations_delete(request, pk):
         return redirect('locations_list')
     return render(request, 'location_confirm_delete.html', {'locations': locations})
 
-
+@login_required
 def toggle_locations_status(request, pk):
     locations = get_object_or_404(Location, pk=pk)
     locations.status = not locations.status  # Toggle between active/inactive
@@ -321,7 +332,7 @@ def toggle_locations_status(request, pk):
 #         form = UserForm()
 #     return render(request, 'create_user.html', {'form': form})
 
-
+@login_required
 def toggle_user_status(request, pk):
     user = get_object_or_404(User, pk=pk)
     user.status = not user.status  # Toggle between active/inactive
@@ -329,7 +340,7 @@ def toggle_user_status(request, pk):
     return redirect('user')
 
 
-
+@login_required
 def user_update(request, pk):
     user = get_object_or_404(User, pk=pk)
     if request.method == 'POST':
@@ -348,11 +359,12 @@ def user_update(request, pk):
 #        users.delete()
 #        return redirect('users_list') 
 #     return render(request, 'user_confirm_delete.html', {'users': users})
-
+@login_required
 def users_view(request):
     users = User.objects.all()
     return render(request, 'users.html', {'users': users})
 
+@login_required
 def add_user(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -362,6 +374,8 @@ def add_user(request):
         return redirect('users')
     return render(request, 'add_user.html')
 
+
+@login_required
 def edit_user(request, user_id):
     user = get_object_or_404(User, id=user_id)
     if request.method == 'POST':
@@ -377,17 +391,20 @@ def edit_user(request, user_id):
         return redirect('users')
     return render(request, 'edit_user.html', {'user': user})
 
+
+@login_required
 def delete_user(request, user_id):
     user = get_object_or_404(User, id=user_id)
     user.delete()
     return redirect('users')
 
 
-
+@login_required
 def assetformlist(request):
     assets=AssetCreate.objects.all()
     return render(request, 'assetlist.html', {'assets': assets})
 
+@login_required
 def assetformcreate(request):
     if request.method=='POST':
         form=AssetCreateForm(request.POST)
@@ -398,6 +415,7 @@ def assetformcreate(request):
         form=AssetCreateForm()
     return render(request,'assetformcreate.html',{'form':form})
 
+@login_required
 def assetform_update(request,pk):
     
     asset = get_object_or_404(AssetCreate, pk=pk)
@@ -410,7 +428,7 @@ def assetform_update(request,pk):
         form = AssetCreateForm(instance=asset)
     return render(request, 'assetformcreate.html', {'form': form})
 
-
+@login_required
 def assetform_delete(request,pk):
     asset = get_object_or_404(AssetCreate, pk=pk)
     if request.method == 'POST':
@@ -419,5 +437,8 @@ def assetform_delete(request,pk):
     return render(request, 'assetformconfirm_delete.html', {'asset': asset})
 
 
-# def assetform_details():
+def assetform_details(request,pk):
+    asset=get_object_or_404(AssetCreate,pk=pk)
+    return render(request,'assetform_details.html',{'asset':asset})
+    
     
