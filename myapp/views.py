@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect,get_object_or_404
 
 from django.contrib.auth.decorators import login_required
 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 from . models import Asset
@@ -69,6 +69,10 @@ def admin_dashboard(request):
 def user_dashboard(request):
     return render(request, 'user_dashboard.html')
 
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 
 
 def assetid(request):
@@ -307,15 +311,15 @@ def toggle_locations_status(request, pk):
 
 # from .forms import UserForm
 
-def create_user(request):
-    if request.method == 'POST':
-        form = UserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('user_list')  # redirect to user list page
-    else:
-        form = UserForm()
-    return render(request, 'create_user.html', {'form': form})
+# def create_user(request):
+#     if request.method == 'POST':
+#         form = UserForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('user_list')  # redirect to user list page
+#     else:
+#         form = UserForm()
+#     return render(request, 'create_user.html', {'form': form})
 
 
 def toggle_user_status(request, pk):
