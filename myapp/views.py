@@ -18,7 +18,7 @@ from .forms import LocationForm
 from django.utils import timezone
 from . models import AssetCreate
 from .forms import AssetCreateForm
-
+from django.contrib.auth.decorators import user_passes_test
 
 from django.contrib import messages
 
@@ -60,8 +60,11 @@ def login_view(request):
     return render(request, 'login.html')
 
 
+def admin_only(user):
+    return user.is_superuser
 
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def admin_dashboard(request):
     return render(request, 'admin_dashboard.html')
 
@@ -75,7 +78,7 @@ def logout_view(request):
     return redirect('login')
 
 @login_required
-
+@user_passes_test(admin_only, login_url='/userhome/')
 def assetid(request):
     # assets = Asset.objects.all()
     # return render(request, 'assetid.html', {'assets': assets})
@@ -92,6 +95,7 @@ def assetid(request):
 
 
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def asset_create(request):
     if request.method == 'POST':
         form = AssetForm(request.POST)
@@ -103,6 +107,7 @@ def asset_create(request):
     return render(request, 'asset_form.html', {'form': form})
 
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def asset_update(request, pk):
     asset = get_object_or_404(Asset, pk=pk)
     if request.method == 'POST':
@@ -115,6 +120,7 @@ def asset_update(request, pk):
     return render(request, 'asset_form.html', {'form': form})
 
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def asset_delete(request, pk):
     asset = get_object_or_404(Asset, pk=pk)
     if request.method == 'POST':
@@ -131,12 +137,14 @@ def toggle_asset_status(request, pk):
     return redirect('assetid')
 
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def category_list(request):
     categories = Category.objects.select_related('asset').all()
     return render(request, 'category_list.html', {'categories': categories})
 
 
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def category_create(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -149,6 +157,7 @@ def category_create(request):
 
 
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def category_update(request, pk):
     category = get_object_or_404(Category, pk=pk)
     if request.method == 'POST':
@@ -162,6 +171,7 @@ def category_update(request, pk):
 
 
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def category_delete(request, pk):
     category = get_object_or_404(Category, pk=pk)
     if request.method == 'POST':
@@ -178,11 +188,13 @@ def toggle_category_status(request, pk):
 
 #subcategory
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def subcategory_list(request):
     subcategories = SubCategory.objects.all()
     return render(request, 'subcategory.html', {'subcategories': subcategories})
 
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def subcategory_create(request):
     if request.method == 'POST':
         form = SubCategoryForm(request.POST)
@@ -194,6 +206,7 @@ def subcategory_create(request):
     return render(request, 'subcategoryform.html', {'form': form})
 
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def subcategory_update(request, pk):
     subcategory = get_object_or_404(SubCategory, pk=pk)
     if request.method == 'POST':
@@ -206,6 +219,7 @@ def subcategory_update(request, pk):
     return render(request, 'subcategoryform.html', {'form': form})
 
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def subcategory_delete(request, pk):
     subcategory = get_object_or_404(SubCategory, pk=pk)
     if request.method == 'POST':
@@ -436,9 +450,20 @@ def assetform_delete(request,pk):
        return redirect('assetlist') 
     return render(request, 'assetformconfirm_delete.html', {'asset': asset})
 
-
+@login_required
 def assetform_details(request,pk):
     asset=get_object_or_404(AssetCreate,pk=pk)
     return render(request,'assetform_details.html',{'asset':asset})
     
-    
+@login_required
+def assetformuser(request):
+    if request.method=='POST':
+        form=AssetCreateForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('user_dashboard')
+    else:
+        form=AssetCreateForm()
+    return render(request,'assetformuser.html',{'form':form})
+
+

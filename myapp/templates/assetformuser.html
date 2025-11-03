@@ -1,0 +1,60 @@
+{% extends 'base_user.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 900px;">
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-header bg-primary text-white text-center rounded-top-4">
+            <h4 class="mb-0">Add New Asset</h4>
+        </div>
+
+        <div class="card-body p-4">
+            <form method="POST" novalidate>
+                {% csrf_token %}
+                
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ field.label }}</label>
+                        <div class="w-100">
+                            {{ field }}
+                        </div>
+                        {% if field.errors %}
+                            <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{% url 'user_dashboard' %}" class="btn btn-outline-secondary px-4">Back</a>
+                    <button type="submit" class="btn btn-success px-4">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .card {
+        background-color: #fff;
+    }
+    input, textarea {
+        width: 100% !important;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        font-size: 15px;
+    }
+    input:focus, textarea:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 4px rgba(13, 110, 253, 0.3);
+        outline: none;
+    }
+    label {
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+

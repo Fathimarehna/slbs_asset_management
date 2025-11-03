@@ -17,7 +17,7 @@
 </head>
 <body class="" style="background-color: #e5e6f0;">
 
-   <!-- {% include 'navbar.html' %} -->
+   {% include 'navbar.html' %}
 
    <div class="container-fluid px-4">
     {% block content %}
@@ -116,6 +116,7 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
                 
+                
                 <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a></li>
             </ul>
         </li>
@@ -128,17 +129,13 @@
         <a class="nav-link {% if request.path == '/assetform/' %}active{% endif %}" href="{% url 'assetformuser' %}">
            <i class="fas fa-box me-2"></i> Asset Form
         </a>
-
     </nav>
 </div>
 
 <!-- Main Content -->
 <div class="content-wrapper">
     {% block content %}
-<div class="text-center mt-5">
-    <img src="{% static 'assets/download.png' %}" alt="" width="600px" height="400px">
     {% endblock %}
-    </div>
 </div>
 
 <!-- Bootstrap JS -->
