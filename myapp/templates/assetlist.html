@@ -16,19 +16,18 @@
 <br>
 
 <table border="1" class="table table-secondary table-striped mx-auto" style="width: 1000px;">
-    <tr>
+    <tr> 
+       
         <th>ID</th>
-      
         <th>Asset Name</th>
         <th>Details</th>
-       
         <th>Actions</th>
         
     </tr>
     {% for asset in assets %}
     <tr>
-        <td>{{ asset.id }}</td>
-        
+       
+        <td>{{ forloop.counter }}</td>
         <td>{{ asset.assetname }}</td>
        
 

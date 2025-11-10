@@ -32,7 +32,7 @@
     
     {% for location in locations %}
     <tr>
-        <td>{{ location.id }}</td>
+        <td>{{ forloop.counter }}</td>
         <td>{{ location.location }}</td>
 
 
