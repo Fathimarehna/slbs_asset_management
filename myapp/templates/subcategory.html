@@ -3,8 +3,8 @@
 
 {% block content %}
 
-
-<h1 class="text-dark text-center fw-bold  mt-5">Subcategory</h1>
+  
+<h1 class="text-dark text-center fw-bold  mt-5">Subcategory</h1> 
 <br>
 
 
@@ -27,7 +27,7 @@
     </tr>
     {% for subcategory in subcategories %}
     <tr>
-        <td>{{ subcategory.id }}</td>
+        <td>{{ forloop.counter }}</td>
         <td>{{ subcategory.title }}</td>
         <td>{{ subcategory.category.title}}</td>
 
