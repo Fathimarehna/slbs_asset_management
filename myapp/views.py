@@ -22,6 +22,8 @@ from django.contrib.auth.decorators import user_passes_test
 
 from django.contrib import messages
 
+from django.http import JsonResponse
+
 # Create your views here.
 
 
@@ -467,3 +469,7 @@ def assetformuser(request):
     return render(request,'assetformuser.html',{'form':form})
 
 
+def load_subcategories(request):
+    category_id = request.GET.get('category_id')
+    subcategories = SubCategory.objects.filter(category_id=category_id).values('id', 'title')
+    return JsonResponse(list(subcategories), safe=False)
