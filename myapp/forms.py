@@ -167,3 +167,23 @@ class AssetCreateForm(forms.ModelForm):
             self.fields['subcategory'].queryset = self.instance.category.subcategories.all()
 
 
+
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+
+class AddUserForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Enter Password'}))
+    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Confirm Password'}))
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if password != confirm_password:
+            raise ValidationError("Passwords do not match. Please try again.")
+

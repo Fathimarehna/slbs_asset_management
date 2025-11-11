@@ -21,8 +21,8 @@ from .forms import AssetCreateForm
 from django.contrib.auth.decorators import user_passes_test
 
 from django.contrib import messages
-
 from django.http import JsonResponse
+
 
 # Create your views here.
 
@@ -380,15 +380,15 @@ def users_view(request):
     users = User.objects.all()
     return render(request, 'users.html', {'users': users})
 
-@login_required
-def add_user(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        User.objects.create_user(username=username, email=email, password=password)
-        return redirect('users')
-    return render(request, 'add_user.html')
+# @login_required
+# def add_user(request):
+#     if request.method == 'POST':
+#         username = request.POST.get('username')
+#         email = request.POST.get('email')
+#         password = request.POST.get('password')
+#         User.objects.create_user(username=username, email=email, password=password)
+#         return redirect('users')
+#     return render(request, 'add_user.html')
 
 
 @login_required
@@ -473,3 +473,29 @@ def load_subcategories(request):
     category_id = request.GET.get('category_id')
     subcategories = SubCategory.objects.filter(category_id=category_id).values('id', 'title')
     return JsonResponse(list(subcategories), safe=False)
+
+@login_required
+def add_user(request):
+    if request.method == 'POST':
+        # userid = request.POST.get('userid')
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match!")
+            return render(request, 'add_user.html')
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists!")
+            return render(request, 'add_user.html')
+
+        user = User.objects.create_user(username=username, email=email, password=password)
+        user.save()
+        messages.success(request, "User created successfully!")
+        return redirect('users')
+
+    return render(request, 'add_user.html')
+
+
