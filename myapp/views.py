@@ -241,11 +241,13 @@ def toggle_subcategory_status(request, pk):
 
 #departmentviews
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def departments_list(request):
     departments=Department.objects.all()
     return render(request, 'departmentslist.html', {'departments': departments})
     
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def departments_create(request):
     if request.method == 'POST':
         form = DepartmentForm(request.POST)
@@ -257,6 +259,7 @@ def departments_create(request):
     return render(request, 'departmentsform.html', {'form': form})
 
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def departments_update(request, pk):
     departments = get_object_or_404(Department, pk=pk)
     if request.method == 'POST':
@@ -269,6 +272,7 @@ def departments_update(request, pk):
     return render(request, 'departmentsform.html', {'form': form})
 
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def departments_delete(request, pk):
     departments = get_object_or_404(Department, pk=pk)
     if request.method == 'POST':
@@ -286,11 +290,13 @@ def toggle_departments_status(request, pk):
 
 #locationsview
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def locations_list(request):
     locations=Location.objects.all()
     return render(request, 'locations_list.html', {'locations': locations})
     
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def locations_create(request):
     if request.method == 'POST':
         form = LocationForm(request.POST)
@@ -302,6 +308,7 @@ def locations_create(request):
     return render(request, 'locationsform.html', {'form': form})
 
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def locations_update(request, pk):
 
     locations = get_object_or_404(Location, pk=pk)
@@ -316,6 +323,7 @@ def locations_update(request, pk):
 
 
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def locations_delete(request, pk):
     locations = get_object_or_404(Location, pk=pk)
     if request.method == 'POST':
@@ -357,6 +365,7 @@ def toggle_user_status(request, pk):
 
 
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def user_update(request, pk):
     user = get_object_or_404(User, pk=pk)
     if request.method == 'POST':
@@ -376,6 +385,7 @@ def user_update(request, pk):
 #        return redirect('users_list') 
 #     return render(request, 'user_confirm_delete.html', {'users': users})
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def users_view(request):
     users = User.objects.all()
     return render(request, 'users.html', {'users': users})
@@ -389,9 +399,20 @@ def users_view(request):
 #         User.objects.create_user(username=username, email=email, password=password)
 #         return redirect('users')
 #     return render(request, 'add_user.html')
+@login_required
+@user_passes_test(admin_only, login_url='/userhome/')
+def add_user(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        User.objects.create_user(username=username, email=email, password=password)
+        return redirect('users')
+    return render(request, 'add_user.html')
 
 
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def edit_user(request, user_id):
     user = get_object_or_404(User, id=user_id)
     if request.method == 'POST':
@@ -409,6 +430,7 @@ def edit_user(request, user_id):
 
 
 @login_required
+@user_passes_test(admin_only, login_url='/userhome/')
 def delete_user(request, user_id):
     user = get_object_or_404(User, id=user_id)
     user.delete()
@@ -499,3 +521,46 @@ def add_user(request):
     return render(request, 'add_user.html')
 
 
+@user_passes_test(admin_only, login_url='/userhome/')
+def asset_report(request):
+    assets = AssetCreate.objects.all()
+
+    # --- get filter values from form ---
+    category = request.GET.get('category')
+    subcategory = request.GET.get('subcategory')
+    location = request.GET.get('location')
+    department = request.GET.get('department')
+    condition = request.GET.get('condition')
+    date_from = request.GET.get('date_from')
+    date_to = request.GET.get('date_to')
+
+    # --- apply filters dynamically ---
+    if category:
+        assets = assets.filter(category_id=category)
+    if subcategory:
+        assets = assets.filter(subcategory=subcategory)
+    if location:
+        assets = assets.filter(location=location)
+    if department:
+        assets = assets.filter(department=department)
+    if condition:
+        assets = assets.filter(condition=condition)
+    if date_from and date_to:
+        assets = assets.filter(purchase_date__range=[date_from, date_to])
+
+    context = {
+        'assets': assets,
+        'categories': Category.objects.all(),
+        # 'subcategories':SubCategory.objects.all(),
+        'departments': Department.objects.all(),
+        'locations': Location.objects.all(),
+        'conditions': AssetCreate.CONDITION_CHOICES,
+    }
+    return render(request, 'report.html', context)
+
+
+# AJAX view for dependent subcategory dropdown
+def load_subcategories(request):
+    category_id = request.GET.get('category_id')
+    subcategories = SubCategory.objects.filter(category_id=category_id).values('id', 'title')
+    return JsonResponse(list(subcategories), safe=False)
