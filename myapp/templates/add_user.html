@@ -21,7 +21,7 @@
 
         <div class="mb-3">
             <label class="form-label">Username</label>
-            <input type="text" name="username" class="form-control" placeholder="Enter Username" maxlength="20" required>
+            <input type="text" name="username" class="form-control" placeholder="Enter Username" maxlength="10" required>
         </div>
 
         <div class="mb-3">
@@ -31,13 +31,33 @@
 
         <div class="mb-3">
             <label class="form-label">Password</label>
-            <input type="password" name="password" class="form-control" placeholder="Enter Password" maxlength="10" required>
+            <input type="password" name="password" id="password" class="form-control" placeholder="Enter Password" maxlength="12" minlength="8" required>
         </div>
+    
+
+        <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" id="showPassword">
+                <label class="form-check-label" for="showPassword">
+                    Show Password
+                </label>
+            </div>
+
+            <br>
 
         <button type="submit" class="btn btn-success">Create User</button>
         <a href="{% url 'users' %}" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
+
+
+<script>
+    const passwordInput = document.getElementById("password");
+    const showPassword = document.getElementById("showPassword");
+
+    showPassword.addEventListener("change", function () {
+        passwordInput.type = this.checked ? "text" : "password";
+    });
+</script>
 
 
 

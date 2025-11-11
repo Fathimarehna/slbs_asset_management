@@ -62,7 +62,10 @@ urlpatterns = [
 
     path('assetform/user', views.assetformuser, name='assetformuser'),
     
-    path('ajax/load-subcategories/', views.load_subcategories, name='ajax_load_subcategories')
+    path('ajax/load-subcategories/', views.load_subcategories, name='ajax_load_subcategories'),
+
+
+    path('report/', views.asset_report, name='asset_report'),
 
 
 ]
