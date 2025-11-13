@@ -16,7 +16,7 @@ class AssetForm(forms.ModelForm):
 
 
     title = forms.CharField(
-        max_length=20,
+        max_length=10,
         validators=[
             MinLengthValidator(3,message='Minimum 3 charecters required , '),
             RegexValidator(

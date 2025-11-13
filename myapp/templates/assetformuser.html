@@ -56,5 +56,33 @@
         font-weight: 600;
     }
 </style>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+  $("#id_category").change(function () {
+    var categoryId = $(this).val();
+
+    // Clear and reset subcategory dropdown
+    $("#id_subcategory").html('<option value="">-----------</option>');
+
+    if (categoryId) {
+      $.ajax({
+        url: "{% url 'ajax_load_subcategories' %}",  // this is your Django URL
+        data: { 'category_id': categoryId },
+        success: function (data) {
+          $.each(data, function (key, value) {
+            $("#id_subcategory").append(
+              '<option value="' + value.id + '">' + value.title + '</option>'
+            );
+          });
+        }
+      });
+    }
+  });
+</script>
+
 {% endblock %}
 
