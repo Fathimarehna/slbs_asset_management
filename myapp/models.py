@@ -85,15 +85,15 @@ class AssetCreate(models.Model):
     category=models.ForeignKey('Category',on_delete=models.CASCADE)
     subcategory=models.ForeignKey('SubCategory',on_delete=models.CASCADE)
     assetname=models.CharField(max_length=10)
-    description=models.CharField(max_length=20)
+    description=models.CharField(max_length=1000)
     make=models.CharField(max_length=10)
     location=models.ForeignKey('Location',on_delete=models.CASCADE)
-    assigned_to=models.CharField(max_length=10)
+    assigned_to=models.CharField(max_length=50)
     department=models.ForeignKey('Department',on_delete=models.CASCADE)
     purchase_date=models.DateField()
     warrenty_expiry=models.DateField()
     condition=models.CharField(max_length=10,choices=CONDITION_CHOICES)
-    remarks=models.TextField(max_length=20)
+    remarks=models.TextField(max_length=1000)
     status=models.BooleanField(default=True)
 
 
