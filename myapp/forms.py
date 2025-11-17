@@ -134,7 +134,7 @@ class AssetCreateForm(forms.ModelForm):
     assigned_to = forms.CharField(
         max_length=50,
         validators=[
-            MinLengthValidator(3, message='Minimum 2 characters required.'),
+            MinLengthValidator(2, message='Minimum 2 characters required.'),
             RegexValidator(
                 regex=r'^[A-Za-z ]+$',
                 message='Only letters and spaces are allowed.'

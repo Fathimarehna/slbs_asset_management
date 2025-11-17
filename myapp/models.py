@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
        
 class Asset(models.Model):
-    title = models.CharField(max_length=10)
+    title = models.CharField(max_length=20)
     status = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
@@ -16,7 +16,7 @@ class Asset(models.Model):
 class Category(models.Model):
     asset = models.OneToOneField('Asset', on_delete=models.CASCADE, related_name='category')
     # asset = models.ForeignKey('Asset', on_delete=models.CASCADE, related_name='categories')
-    title = models.CharField(max_length=10)
+    title = models.CharField(max_length=20)
     status = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
@@ -26,7 +26,7 @@ class Category(models.Model):
 
 class SubCategory(models.Model):
     category=models.ForeignKey('Category',on_delete=models.CASCADE,related_name='subcategories')
-    title=models.CharField(max_length=10)
+    title=models.CharField(max_length=20)
     status=models.BooleanField(default=True)
     created_date=models.DateTimeField(auto_now_add=True)
     updated_date=models.DateTimeField(auto_now=True)
@@ -36,7 +36,7 @@ class SubCategory(models.Model):
 
 
 class Department(models.Model):
-    title=models.CharField(max_length=10)
+    title=models.CharField(max_length=20)
     status=models.BooleanField(default=True)
     created_date=models.DateTimeField(auto_now_add=True)
     updated_date=models.DateTimeField(auto_now=True)
@@ -61,9 +61,9 @@ class User(models.Model):
         ('user', 'user'),
     ]
 
-    name = models.CharField(max_length=10)
+    name = models.CharField(max_length=20)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
-    password = models.CharField(max_length=10)
+    password = models.CharField(max_length=12)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
@@ -84,7 +84,7 @@ class AssetCreate(models.Model):
     CONDITION_CHOICES=[('Good','Good'),('Fair','Fair'),('Poor','Poor')]
     category=models.ForeignKey('Category',on_delete=models.CASCADE)
     subcategory=models.ForeignKey('SubCategory',on_delete=models.CASCADE)
-    assetname=models.CharField(max_length=10)
+    assetname=models.CharField(max_length=20)
     description=models.CharField(max_length=1000)
     make=models.CharField(max_length=10)
     location=models.ForeignKey('Location',on_delete=models.CASCADE)
@@ -98,5 +98,5 @@ class AssetCreate(models.Model):
 
 
 
-
+ 
 

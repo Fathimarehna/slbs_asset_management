@@ -121,22 +121,49 @@
         {% endfor %}
     </table>
 
-    <script>
-        // Load subcategories dynamically when category changes
-        $('#category').change(function() {
-            var categoryId = $(this).val();
+   <script>
+    // When category changes
+    $('#category').change(function() {
+        var categoryId = $(this).val();
+        $.ajax({
+            url: "{% url 'ajax_load_subcategories' %}",
+            data: {'category_id': categoryId},
+            success: function(data) {
+                $("#subcategory").html('<option value="">All</option>');
+                $.each(data, function(index, subcat) {
+                    $("#subcategory").append('<option value="' + subcat.id + '">' + subcat.title + '</option>');
+                });
+            }
+        });
+    });
+
+    // On page load, auto-load subcategories if category is selected
+    $(document).ready(function () {
+        var selectedCategory = $('#category').val();
+        var selectedSubcategory = "{{ request.GET.subcategory }}";
+
+        if (selectedCategory) {
             $.ajax({
                 url: "{% url 'ajax_load_subcategories' %}",
-                data: {'category_id': categoryId},
+                data: { 'category_id': selectedCategory },
                 success: function(data) {
                     $("#subcategory").html('<option value="">All</option>');
                     $.each(data, function(index, subcat) {
-                        $("#subcategory").append('<option value="' + subcat.id + '">' + subcat.title + '</option>');
+                        $("#subcategory").append(
+                            '<option value="' + subcat.id + '">' + subcat.title + '</option>'
+                        );
                     });
+
+                    // Reselect the subcategory user selected earlier
+                    if (selectedSubcategory) {
+                        $("#subcategory").val(selectedSubcategory);
+                    }
                 }
             });
-        });
-    </script>
+        }
+    });
+</script>
+
 </body>
 </html>
 {% endblock %}
