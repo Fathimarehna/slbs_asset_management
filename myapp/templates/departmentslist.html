@@ -3,63 +3,79 @@
 
 {% block content %}
 
+<h1 class="text-dark text-center fw-bold mt-5">Department Management</h1>
 
-<h1 class="text-dark text-center fw-bold  mt-5">Department Management</h1>
-<br>
-
-
-<div class="text-end px-4">
-    <a href="{% url 'departments_create' %}" class="btn btn-danger">Add New department</a>
+<div class="text-end px-4 mt-3">
+    <a href="{% url 'departments_create' %}" class="btn btn-danger me-2">Add New Department</a>
     <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Back</a>
 </div>
-<br>
-<br>
 
-<table border="1" class="table table-secondary table-striped mx-auto" style="width: 1000px;">
-    <tr>
-        <th>ID</th>
-        <th>Title</th>
-        <th>Status</th>
-        <th>Created</th>
-        <th>Updated</th>
-        <th>Actions</th>
-    </tr>
-    {% for department in departments %}
-    <tr>
-        <td>{{ forloop.counter }}</td>
-        <td>{{ department.title }}</td>
+<div class="container mt-4">
 
+    <!-- Responsive table wrapper -->
+    <div class="table-responsive rounded-3 shadow-sm">
+        <table class="table table-bordered table-striped table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Updated</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
 
-        <td>
-            
-            {% if department.status %}
-                Active
-            {% else %}
-                Inactive
-            {% endif %}
-        </td>
+            <tbody>
+                {% for department in departments %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ department.title }}</td>
 
+                    <td>
+                        {% if department.status %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </td>
 
-        <td>{{ department.created_date }}</td>
-        <td>{{ department.updated_date }}</td>
-        <td>
-                <a href="{% url 'departments_update' department.id %}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i>Edit</a>
+                    <td>{{ department.created_date }}</td>
+                    <td>{{ department.updated_date }}</td>
 
+                    <td class="text-nowrap">
 
-                {% if department.status %}
-                <!-- If active, show Soft Delete button -->
-                <a href="{% url 'toggle_departments_status' department.id %}" class="btn btn-sm btn-warning">Deactivate</a>
-                {% else %}
-                <!-- If inactive, show Activate button -->
-                <a href="{% url 'toggle_departments_status' department.id %}" class="btn btn-sm btn-success">Activate</a>
-                {% endif %}
+                        <a href="{% url 'departments_update' department.id %}" 
+                           class="btn btn-sm btn-primary me-1">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
 
-                <a href="{% url 'departments_delete' department.id %}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i>Delete</a>
+                        {% if department.status %}
+                            <a href="{% url 'toggle_departments_status' department.id %}" 
+                               class="btn btn-sm btn-warning me-1">
+                                Deactivate
+                            </a>
+                        {% else %}
+                            <a href="{% url 'toggle_departments_status' department.id %}" 
+                               class="btn btn-sm btn-success me-1">
+                                Activate
+                            </a>
+                        {% endif %}
 
-                
-            </td>
-    </tr>
-    {% endfor %}
-</table>
+                        <a href="{% url 'departments_delete' department.id %}" 
+                           class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
 
 {% endblock %}
+

@@ -34,7 +34,7 @@ class AssetForm(forms.ModelForm):
 
 class CategoryForm(forms.ModelForm):
     title = forms.CharField(
-        max_length=20,
+        max_length=30,
         validators=[
             MinLengthValidator(3,message='Minimum 3 charecters required'),
             RegexValidator(
@@ -51,7 +51,7 @@ class CategoryForm(forms.ModelForm):
 
 class SubCategoryForm(forms.ModelForm):
     title = forms.CharField(
-        max_length=20,
+        max_length=30,
         validators=[
             MinLengthValidator(3,message='Minimum 3 charecters required'),
             RegexValidator(
@@ -67,7 +67,7 @@ class SubCategoryForm(forms.ModelForm):
 
 class DepartmentForm(forms.ModelForm):
     title = forms.CharField(
-        max_length=20,
+        max_length=30,
         validators=[
             MinLengthValidator(3,message='Minimum 3 charecters required'),
             RegexValidator(
@@ -131,6 +131,16 @@ class AssetCreateForm(forms.ModelForm):
     )
 
 
+    assigned_to = forms.CharField(
+        max_length=50,
+        validators=[
+            MinLengthValidator(2, message='Minimum 2 characters required.'),
+            RegexValidator(
+                regex=r'^[A-Za-z ]+$',
+                message='Only letters and spaces are allowed.'
+            )
+        ]
+    )
 
     class Meta:
         model = AssetCreate
@@ -143,7 +153,8 @@ class AssetCreateForm(forms.ModelForm):
         widgets = {
             'purchase_date': forms.DateInput(attrs={'type': 'date'}),
             'warrenty_expiry': forms.DateInput(attrs={'type': 'date'}),
-            'remarks': forms.Textarea(attrs={'rows': 2}),
+            'remarks': forms.Textarea(attrs={'rows': 5}),
+            'description': forms.Textarea(attrs={'rows': 5}),
         }
 
     # 👇 This is the function that filters subcategories based on selected category
