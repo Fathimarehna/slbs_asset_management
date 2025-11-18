@@ -3,69 +3,80 @@
 
 {% block content %}
 
+<h1 class="text-dark text-center fw-bold mt-5">Locations</h1>
 
-<h1 class="text-dark text-center fw-bold  mt-5">Locations</h1>
-<br>
-
-
-<div class="text-end px-4">
-    <a href="{% url 'locations_create' %}" class="btn btn-danger">Add New Locations</a>
+<div class="text-end px-4 mt-3">
+    <a href="{% url 'locations_create' %}" class="btn btn-danger me-2">Add New Location</a>
     <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Back</a>
 </div>
-<br>
-<br>
 
-<table border="1" class="table table-secondary table-striped mx-auto" style="width: 1000px;">
-    <tr>
-        <th>ID</th>
-        <th>Location</th>
-        <th>Status</th>
-        <th>Created Date</th>
-        <th>Updated Date</th>
-        <th>Actions</th>
-        
-    </tr>
+<div class="container mt-4">
 
-
-
-
-    
-    {% for location in locations %}
-    <tr>
-        <td>{{ forloop.counter }}</td>
-        <td>{{ location.location }}</td>
-
-
-        <td>
+    <!-- Responsive table container -->
+    <div class="table-responsive rounded-3 shadow-sm">
+        <table class="table table-bordered table-striped table-hover align-middle">
             
-            {% if location.status %}
-                Active
-            {% else %}
-                Inactive
-            {% endif %}
-        </td>
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Created Date</th>
+                    <th>Updated Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
 
+            <tbody>
+                {% for location in locations %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ location.location }}</td>
 
-        <td>{{ location.created_date }}</td>
-        <td>{{ location.updated_date }}</td>
-        <td>
-                <a href="{% url 'locations_update' location.id %}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i> Edit</a>
+                    <td>
+                        {% if location.status %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </td>
 
+                    <td>{{ location.created_date }}</td>
+                    <td>{{ location.updated_date }}</td>
 
-                {% if location.status %}
-                <!-- If active, show Soft Delete button -->
-                <a href="{% url 'toggle_locations_status' location.id %}" class="btn btn-sm btn-warning">Deactivate</a>
-                {% else %}
-                <!-- If inactive, show Activate button -->
-                <a href="{% url 'toggle_locations_status' location.id %}" class="btn btn-sm btn-success">Activate</a>
-                {% endif %}
+                    <td class="text-nowrap">
 
-                <a href="{% url 'locations_delete' location.id %}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i>Delete</a>
+                        <a href="{% url 'locations_update' location.id %}"
+                           class="btn btn-sm btn-primary me-1">
+                           <i class="fas fa-edit"></i> Edit
+                        </a>
 
-                
-            </td>
-    </tr>
-    {% endfor %}
-</table>
+                        {% if location.status %}
+                            <a href="{% url 'toggle_locations_status' location.id %}" 
+                               class="btn btn-sm btn-warning me-1">
+                                Deactivate
+                            </a>
+                        {% else %}
+                            <a href="{% url 'toggle_locations_status' location.id %}" 
+                               class="btn btn-sm btn-success me-1">
+                                Activate
+                            </a>
+                        {% endif %}
+
+                        <a href="{% url 'locations_delete' location.id %}" 
+                           class="btn btn-sm btn-danger">
+                           <i class="fas fa-trash"></i> Delete
+                        </a>
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
 
 {% endblock %}
+

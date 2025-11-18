@@ -1,15 +1,31 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container mt-5" style="width: 600px;">
-    <div class="card shadow border-0">
-        <div class="card-body text-center p-5">
-            <h4>Are you sure you want to delete <strong>{{ category.title }}</strong>?</h4>
+
+<div class="container d-flex justify-content-center align-items-center mt-5">
+    <div class="card shadow border-0 w-100" style="max-width: 500px;">
+        <div class="card-body text-center p-4 p-md-5">
+
+            <h4 class="mb-3">
+                Are you sure you want to delete 
+                <strong>{{ category.title }}</strong>?
+            </h4>
+
             <form method="POST" class="mt-4">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger px-4 me-3">Yes, Delete</button>
-                <a href="{% url 'category_list' %}" class="btn btn-secondary px-4">Cancel</a>
+
+                <button type="submit" class="btn btn-danger px-4 py-2 me-2 mb-2 w-100 w-md-auto">
+                    Yes, Delete
+                </button>
+
+                <a href="{% url 'category_list' %}" 
+                   class="btn btn-secondary px-4 py-2 mb-2 w-100 w-md-auto">
+                    Cancel
+                </a>
             </form>
+
         </div>
     </div>
 </div>
+
 {% endblock %}
+

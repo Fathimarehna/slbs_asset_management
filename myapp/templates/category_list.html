@@ -1,75 +1,174 @@
 {% extends 'base.html' %}
 {% block content %}
+
+<style>
+/* ======= PROFESSIONAL CLEAN STYLING ======= */
+
+/* Page Title */
+.page-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 25px;
+}
+.page-title::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: #dc3545;
+    margin: 6px auto 0;
+    border-radius: 5px;
+}
+
+/* Top Buttons */
+.top-btn {
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: 7px;
+}
+
+/* Card */
+.custom-card {
+    border-radius: 14px;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+}
+
+/* Table */
+.table thead th {
+    background: #f1f1f1;
+    color: #333;
+    padding: 12px;
+    font-weight: 600;
+}
+
+.table-hover tbody tr:hover {
+    background: #fafafa;
+}
+
+/* Action Buttons */
+.action-btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.table thead th {
+    background-color: #000 !important;
+    color: #fff !important;
+    padding: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+</style>
+
 <div class="container mt-5">
-    <h3 class="fw-bold text-center fs-1">Category List</h3>
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        
+
+    <!-- Page Title -->
+    <h3 class="text-center page-title">Category List</h3>
+
+    <!-- Top Buttons -->
+    <div class="d-flex justify-content-end gap-2 mb-4">
+        <a href="{% url 'category_create' %}" class="btn btn-danger top-btn">
+            <i class="fas fa-plus"></i> Add Category
+        </a>
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary top-btn">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <!-- Table Card -->
+    <div class="custom-card">
+        <div class="table-responsive">
+
+            <table class="table table-hover text-center">
+                <thead>
+                    <tr>
+                        <th>Serial No.</th>
+                        <th>Title</th>
+                        <th>Asset</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Updated</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for category in categories %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ category.title }}</td>
+                        <td>{{ category.asset.title }}</td>
+
+                        <td>
+                            {% if category.status %}
+                                <span class="badge bg-success px-3 py-2">Active</span>
+                            {% else %}
+                                <span class="badge bg-danger px-3 py-2">Inactive</span>
+                            {% endif %}
+                        </td>
+
+                        <td>{{ category.created_date }}</td>
+                        <td>{{ category.updated_date }}</td>
+
+                        <td>
+                            <div class="d-flex justify-content-center gap-2">
+
+                                <!-- Edit -->
+                                <a href="{% url 'category_update' category.id %}"
+                                   class="btn btn-primary btn-sm action-btn">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+
+                                <!-- Activate / Deactivate -->
+                                {% if category.status %}
+                                    <a href="{% url 'toggle_category_status' category.id %}"
+                                       class="btn btn-warning btn-sm action-btn">
+                                        <i class="fas fa-ban"></i> Deactivate
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'toggle_category_status' category.id %}"
+                                       class="btn btn-success btn-sm action-btn">
+                                        <i class="fas fa-check"></i> Activate
+                                    </a>
+                                {% endif %}
+
+                                <!-- Delete -->
+                                <a href="{% url 'category_delete' category.id %}"
+                                   class="btn btn-danger btn-sm action-btn">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-muted py-3">No categories found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
         </div>
+    </div>
 
-
-        
-<div class="text-end px-4">
-    <a href="{% url 'category_create' %}" class="btn btn-danger">Add Category</a>
-    <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Back</a>
 </div>
-<br>
-<br>
 
-        
-   
-    
-
-    <table class="table table-secondary table-striped mx-auto" style="width: 1000px;">
-
-        <thead class="">
-            <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Asset</th>
-                <th>Status</th>
-                <th>Created</th>
-                <th>Updated</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for category in categories %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ category.title }}</td>
-                <td>{{ category.asset.title }}</td>
-                <td>
-                    
-                    {% if category.status %}
-                             Active
-                          {% else %}
-                            Inactive
-                          {% endif %}
-
-                </td>
-                <td>{{ category.created_date }}</td>
-                <td>{{ category.updated_date }}</td>
-                <td>
-
-                    
-                <a href="{% url 'category_update' category.id %}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i>Edit</a>
-
-                {% if category.status %}
-                <!-- If active, show Soft Delete button -->
-                <a href="{% url 'toggle_category_status' category.id %}" class="btn btn-sm btn-warning">Deactivate</a>
-                {% else %}
-                <!-- If inactive, show Activate button -->
-                <a href="{% url 'toggle_category_status' category.id %}" class="btn btn-sm btn-success">Activate</a>
-                {% endif %}
-
-                <a href="{% url 'category_delete' category.id %}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i>Delete</a>
-
-                </td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="7" class="text-center">No categories available.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
 {% endblock %}
+
+
+
+
+
+

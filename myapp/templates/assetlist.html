@@ -3,47 +3,57 @@
 
 {% block content %}
 
-
-<h1 class="text-dark text-center fw-bold  mt-5">Asset details</h1>
+<h1 class="text-dark text-center fw-bold mt-5">Asset details</h1>
 <br>
-
 
 <div class="text-end px-4">
     <a href="{% url 'assetformcreatepage' %}" class="btn btn-danger">Add New Asset</a>
     <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Back</a>
 </div>
-<br>
-<br>
 
-<table border="1" class="table table-secondary table-striped mx-auto" style="width: 1000px;">
-    <tr> 
-       
-        <th>ID</th>
-        <th>Asset Name</th>
-        <th>Details</th>
-        <th>Actions</th>
-        
-    </tr>
-    {% for asset in assets %}
-    <tr>
-       
-        <td>{{ forloop.counter }}</td>
-        <td>{{ asset.assetname }}</td>
-       
+<br><br>
 
+<!-- MAKE TABLE RESPONSIVE -->
+<div class="table-responsive px-3">
+    <table class="table table-secondary table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Asset Name</th>
+                <th>Details</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
 
+        <tbody>
+            {% for asset in assets %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ asset.assetname }}</td>
 
-<td><a href="{% url 'assetform_details' asset.id %}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i>Show Details</a></td>
-        <td><a href="{% url 'assetform_update' asset.id %}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i>Edit</a>
-            <a href="{% url 'assetform_delete' asset.id %}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i>Delete</a>
-</td>
+                <td>
+                    <a href="{% url 'assetform_details' asset.id %}" 
+                       class="btn btn-sm btn-primary">
+                        Show Details
+                    </a>
+                </td>
 
-        
-    </tr>
-    {% endfor %}
-</table>
+                <td>
+                    <a href="{% url 'assetform_update' asset.id %}" 
+                       class="btn btn-sm btn-primary">
+                        Edit
+                    </a>
 
-{% endblock %} 
+                    <a href="{% url 'assetform_delete' asset.id %}" 
+                       class="btn btn-sm btn-danger">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
 
+    </table>
+</div>
 
-
+{% endblock %}

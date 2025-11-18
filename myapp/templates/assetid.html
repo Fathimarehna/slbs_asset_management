@@ -3,63 +3,73 @@
 
 {% block content %}
 
-
-<h1 class="text-dark text-center fw-bold  mt-5">Asset Management</h1>
+<h1 class="text-dark text-center fw-bold mt-5">Asset Management</h1>
 <br>
-
 
 <div class="text-end px-4">
     <a href="{% url 'asset_create' %}" class="btn btn-danger">Add New Asset ID</a>
     <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Back</a>
 </div>
-<br>
-<br>
 
-<table border="1" class="table table-secondary table-striped mx-auto" style="width: 1000px;">
-    <tr>
-        <th>ID</th>
-        <th>Title</th>
-        <th>Status</th>
-        <th>Created</th>
-        <th>Updated</th>
-        <th>Actions</th>
-    </tr>
-    {% for asset in assets %}
-    <tr>
-        <td>{{ forloop.counter }}</td>
-        <td>{{ asset.title }}</td>
+<br><br>
 
+<div class="container mt-3">
+    <div class="table-responsive shadow-sm rounded-3">
+        <table class="table table-secondary table-striped table-bordered align-middle mb-0">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Updated</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
 
-        <td>
-            
-            {% if asset.status %}
-                Active
-            {% else %}
-                Inactive
-            {% endif %}
-        </td>
+            <tbody>
+                {% for asset in assets %}
+                <tr>
+                    <td class="text-center">{{ forloop.counter }}</td>
+                    <td>{{ asset.title }}</td>
 
+                    <td class="text-center">
+                        {% if asset.status %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-danger">Inactive</span>
+                        {% endif %}
+                    </td>
 
-        <td>{{ asset.created_date }}</td>
-        <td>{{ asset.updated_date }}</td>
-        <td>
-                <a href="{% url 'asset_update' asset.id %}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i>Edit</a>
+                    <td>{{ asset.created_date }}</td>
+                    <td>{{ asset.updated_date }}</td>
 
+                    <td class="text-center">
+                        <a href="{% url 'asset_update' asset.id %}" class="btn btn-sm btn-primary mb-1">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
 
-                {% if asset.status %}
-                <!-- If active, show Soft Delete button -->
-                <a href="{% url 'toggle_asset_status' asset.id %}" class="btn btn-sm btn-warning">Deactivate</a>
-                {% else %}
-                <!-- If inactive, show Activate button -->
-                <a href="{% url 'toggle_asset_status' asset.id %}" class="btn btn-sm btn-success">Activate</a>
-                {% endif %}
+                        {% if asset.status %}
+                            <a href="{% url 'toggle_asset_status' asset.id %}" class="btn btn-sm btn-warning mb-1">
+                                Deactivate
+                            </a>
+                        {% else %}
+                            <a href="{% url 'toggle_asset_status' asset.id %}" class="btn btn-sm btn-success mb-1">
+                                Activate
+                            </a>
+                        {% endif %}
 
-                <a href="{% url 'asset_delete' asset.id %}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i>Delete</a>
+                        <a href="{% url 'asset_delete' asset.id %}" class="btn btn-sm btn-danger mb-1">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
 
-                
-            </td>
-    </tr>
-    {% endfor %}
-</table>
+        </table>
+    </div>
+</div>
 
 {% endblock %}
+

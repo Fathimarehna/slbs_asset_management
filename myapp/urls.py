@@ -66,7 +66,7 @@ urlpatterns = [
 
 
     path('report/', views.asset_report, name='asset_report'),
-
+    path('assets/create/', views.asset_create, name='assetcreatepage'),
 
 ]
 
