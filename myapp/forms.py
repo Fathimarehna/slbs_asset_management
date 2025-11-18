@@ -108,9 +108,9 @@ class LocationForm(forms.ModelForm):
 class AssetCreateForm(forms.ModelForm):
 
     assetname = forms.CharField(
-        max_length=10,
+        max_length=30,
         validators=[
-            MinLengthValidator(3,message='Minimum 3 charecters required'),
+            MinLengthValidator(3,message='Minimum 3 charecters required. '),
             RegexValidator(
                 regex=r'^[A-Za-z ]+$',
                 message='Only letters and spaces are allowed.'
@@ -145,9 +145,9 @@ class AssetCreateForm(forms.ModelForm):
     class Meta:
         model = AssetCreate
         fields = [
-            'category', 'subcategory', 'assetname', 'description','make', 'location',
+             'assetname','description','category', 'subcategory','make', 'location',
             'assigned_to', 'department', 'purchase_date', 'warrenty_expiry',
-            'condition', 'remarks'
+            'condition','file', 'remarks',
         ]
 
         widgets = {

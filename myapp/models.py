@@ -84,7 +84,7 @@ class AssetCreate(models.Model):
     CONDITION_CHOICES=[('Good','Good'),('Fair','Fair'),('Poor','Poor')]
     category=models.ForeignKey('Category',on_delete=models.CASCADE)
     subcategory=models.ForeignKey('SubCategory',on_delete=models.CASCADE)
-    assetname=models.CharField(max_length=20)
+    assetname=models.CharField(max_length=30)
     description=models.CharField(max_length=1000)
     make=models.CharField(max_length=10)
     location=models.ForeignKey('Location',on_delete=models.CASCADE)
@@ -95,6 +95,7 @@ class AssetCreate(models.Model):
     condition=models.CharField(max_length=10,choices=CONDITION_CHOICES)
     remarks=models.TextField(max_length=1000)
     status=models.BooleanField(default=True)
+    file = models.FileField(upload_to='asset_files/', blank=True, null=True)
 
 
 
