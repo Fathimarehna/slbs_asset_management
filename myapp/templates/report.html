@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<<<<<<< HEAD
 <h2 class="text-center fw-bold mb-4">Asset Report</h2>
 
 <div class="text-end mb-3">
@@ -83,89 +82,6 @@
             Filter
         </button>
     </div>
-=======
-<div class="container mt-4">
-
-    <h2 class="text-center fw-bold mb-4">Asset Report</h2>
-
-    <div class="text-end mb-3">
-        <a href="{% url 'admin_dashboard' %}" class="btn btn-primary">Back</a>
-    </div>
-
-    <!-- Responsive Filter Form -->
-    <form method="get" class="row g-3">
-
-        <!-- Category -->
-        <div class="col-md-4 col-lg-3">
-            <label class="fw-bold">Category</label>
-            <select name="category" id="category" class="form-select">
-                <option value="">All</option>
-                {% for c in categories %}
-                <option value="{{ c.id }}" {% if request.GET.category == c.id|stringformat:"s" %}selected{% endif %}>
-                    {{ c.title }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <!-- Subcategory -->
-        <div class="col-md-4 col-lg-3">
-            <label class="fw-bold">Subcategory</label>
-            <select name="subcategory" id="subcategory" class="form-select">
-                <option value="">All</option>
-                {% for s in subcategories %}
-                <option value="{{ s.id }}" {% if request.GET.subcategory == s.id|stringformat:"s" %}selected{% endif %}>
-                    {{ s.title }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <!-- Location -->
-        <div class="col-md-4 col-lg-3">
-            <label class="fw-bold">Location</label>
-            <select name="location" class="form-select">
-                <option value="">All</option>
-                {% for l in locations %}
-                <option value="{{ l.id }}" {% if request.GET.location == l.id|stringformat:"s" %}selected{% endif %}>
-                    {{ l.location }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <!-- Department -->
-        <div class="col-md-4 col-lg-3">
-            <label class="fw-bold">Department</label>
-            <select name="department" class="form-select">
-                <option value="">All</option>
-                {% for d in departments %}
-                <option value="{{ d.id }}" {% if request.GET.department == d.id|stringformat:"s" %}selected{% endif %}>
-                    {{ d.title }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <!-- Condition -->
-        <div class="col-md-4 col-lg-3">
-            <label class="fw-bold">Condition</label>
-            <select name="condition" class="form-select">
-                <option value="">All</option>
-                {% for c,v in conditions %}
-                <option value="{{ c }}" {% if request.GET.condition == c %}selected{% endif %}>
-                    {{ v }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <!-- Purchase Date From -->
-        <div class="col-md-4 col-lg-3">
-            <label class="fw-bold">Purchase Date From</label>
-            <input type="date" name="date_from" value="{{ request.GET.date_from }}" class="form-control">
-        </div>
->>>>>>> b4b3c6467dac80b42709fc9c9b0ca930e8020292
 
         <!-- Purchase Date To -->
         <div class="col-md-4 col-lg-3">
@@ -178,7 +94,6 @@
             <button type="submit" class="btn btn-primary w-100">Filter</button>
         </div>
 
-<<<<<<< HEAD
 
 
 </form>
@@ -223,53 +138,6 @@
     </table>
 </div>
 
-=======
-    </form>
-
-    <!-- Responsive Table -->
-    <div class="table-responsive mt-4">
-        <table class="table table-bordered table-striped">
-            <thead class="table-light">
-                <tr>
-                    <th>Asset Name</th>
-                    <th>Category</th>
-                    <th>Subcategory</th>
-                    <th>Department</th>
-                    <th>Location</th</th>
-                    <th>Condition</th>
-                    <th>Purchase Date</th>
-                    <th>Warranty Expiry</th>
-                    <th>Assigned To</th>
-                    <th>Remarks</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for a in assets %}
-                <tr>
-                    <td>{{ a.assetname }}</td>
-                    <td>{{ a.category }}</td>
-                    <td>{{ a.subcategory }}</td>
-                    <td>{{ a.department }}</td>
-                    <td>{{ a.location }}</td>
-                    <td>{{ a.condition }}</td>
-                    <td>{{ a.purchase_date }}</td>
-                    <td>{{ a.warrenty_expiry }}</td>
-                    <td>{{ a.assigned_to }}</td>
-                    <td>{{ a.remarks }}</td>
-                </tr>
-                {% empty %}
-                <tr><td colspan="10" class="text-center">No records found.</td></tr>
-                {% endfor %}
-            </tbody>
-
-        </table>
-    </div>
-
-</div>
-
-<!-- Subcategory Auto-load Script -->
->>>>>>> b4b3c6467dac80b42709fc9c9b0ca930e8020292
 <script>
     // When category changes
     $('#category').change(function () {
@@ -287,11 +155,7 @@
         });
     });
 
-<<<<<<< HEAD
     // Load subcategory on page load
-=======
-    // Reload subcategories if selected
->>>>>>> b4b3c6467dac80b42709fc9c9b0ca930e8020292
     $(document).ready(function () {
         var selectedCategory = $('#category').val();
         var selectedSubcategory = "{{ request.GET.subcategory }}";
@@ -302,11 +166,7 @@
                 data: { 'category_id': selectedCategory },
                 success: function (data) {
                     $("#subcategory").html('<option value="">All</option>');
-<<<<<<< HEAD
                     $.each(data, function(index, subcat) {
-=======
-                    $.each(data, function (index, subcat) {
->>>>>>> b4b3c6467dac80b42709fc9c9b0ca930e8020292
                         $("#subcategory").append('<option value="' + subcat.id + '">' + subcat.title + '</option>');
                     });
 
@@ -320,7 +180,3 @@
 </script>
 
 {% endblock %}
-<<<<<<< HEAD
-=======
-
->>>>>>> b4b3c6467dac80b42709fc9c9b0ca930e8020292
