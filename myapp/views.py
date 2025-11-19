@@ -553,7 +553,7 @@ def asset_report(request):
     context = {
         'assets': assets,
         'categories': Category.objects.all(),
-        # 'subcategories':SubCategory.objects.all(),
+        'subcategories':SubCategory.objects.all(),
         'departments': Department.objects.all(),
         'locations': Location.objects.all(),
         'conditions': AssetCreate.CONDITION_CHOICES,
@@ -566,3 +566,88 @@ def load_subcategories(request):
     category_id = request.GET.get('category_id')
     subcategories = SubCategory.objects.filter(category_id=category_id).values('id', 'title')
     return JsonResponse(list(subcategories), safe=False)
+
+
+
+import openpyxl
+from openpyxl.utils import get_column_letter
+from django.http import HttpResponse
+
+def download_asset_report_excel(request):
+    assets = Asset.objects.all()
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Asset Report"
+
+    headers = ["Title", "Status", "Created Date", "Updated Date"]
+    ws.append(headers)
+
+    for a in assets:
+        ws.append([
+            a.title,
+            "Active" if a.status else "Inactive",
+            a.created_date.strftime("%Y-%m-%d %H:%M:%S"),
+            a.updated_date.strftime("%Y-%m-%d %H:%M:%S"),
+        ])
+
+    for col in ws.columns:
+        length = max(len(str(cell.value)) for cell in col)
+        ws.column_dimensions[get_column_letter(col[0].column)].width = length + 2
+
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = 'attachment; filename=Asset_Report.xlsx'
+    wb.save(response)
+    return response
+
+
+   
+
+
+
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from django.http import HttpResponse
+
+def download_asset_report_pdf(request):
+    assets = Asset.objects.all()
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="Asset_Report.pdf"'
+
+    doc = SimpleDocTemplate(response, pagesize=A4)
+    elements = []
+    styles = getSampleStyleSheet()
+
+    title = Paragraph("Asset Report", styles['Title'])
+    elements.append(title)
+
+    data = [
+        ["Title", "Status", "Created Date", "Updated Date"]
+    ]
+
+    for a in assets:
+        data.append([
+            a.title,
+            "Active" if a.status else "Inactive",
+            a.created_date.strftime("%Y-%m-%d %H:%M:%S"),
+            a.updated_date.strftime("%Y-%m-%d %H:%M:%S")
+        ])
+
+    table = Table(data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+    ]))
+
+    elements.append(table)
+    doc.build(elements)
+    return response
