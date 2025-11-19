@@ -553,7 +553,7 @@ def asset_report(request):
     context = {
         'assets': assets,
         'categories': Category.objects.all(),
-        # 'subcategories':SubCategory.objects.all(),
+        'subcategories':SubCategory.objects.all(),
         'departments': Department.objects.all(),
         'locations': Location.objects.all(),
         'conditions': AssetCreate.CONDITION_CHOICES,
