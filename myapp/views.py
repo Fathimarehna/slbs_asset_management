@@ -570,84 +570,93 @@ def load_subcategories(request):
 
 
 import openpyxl
-from openpyxl.utils import get_column_letter
 from django.http import HttpResponse
+from .models import AssetCreate
 
 def download_asset_report_excel(request):
-    assets = Asset.objects.all()
-
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Asset Report"
 
-    headers = ["Asset Name", "Status", "Created Date", "Updated Date"]
+    # Headers same as UI
+    headers = [
+        "Asset Name", "Category", "Subcategory", "Department", "Location",
+        "Condition", "Purchase Date", "Warranty Expiry", "Assigned To", "Remarks"
+    ]
     ws.append(headers)
+
+    assets = AssetCreate.objects.all()
 
     for a in assets:
         ws.append([
-            a.title,
-            "Active" if a.status else "Inactive",
-            a.created_date.strftime("%Y-%m-%d %H:%M:%S"),
-            a.updated_date.strftime("%Y-%m-%d %H:%M:%S"),
+            a.assetname,
+            a.category.title if a.category else "",
+            a.subcategory.title if a.subcategory else "",
+            a.department.title if a.department else "",
+            a.location.location if a.location else "",
+            a.condition,
+            a.purchase_date.strftime("%d-%m-%Y") if a.purchase_date else "",
+            a.warrenty_expiry.strftime("%d-%m-%Y") if a.warrenty_expiry else "",
+            a.assigned_to,
+            a.remarks,
         ])
 
-    for col in ws.columns:
-        length = max(len(str(cell.value)) for cell in col)
-        ws.column_dimensions[get_column_letter(col[0].column)].width = length + 2
-
     response = HttpResponse(
-        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
-    response['Content-Disposition'] = 'attachment; filename=Asset_Report.xlsx'
+    response['Content-Disposition'] = 'attachment; filename=asset_report.xlsx'
+
     wb.save(response)
     return response
 
 
-   
-
-
-
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
-from reportlab.lib.pagesizes import A4
-from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.pagesizes import landscape, A4
+from reportlab.pdfgen import canvas
 from django.http import HttpResponse
+from .models import AssetCreate
 
 def download_asset_report_pdf(request):
-    assets = Asset.objects.all()
-
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="Asset_Report.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="asset_report.pdf"'
 
-    doc = SimpleDocTemplate(response, pagesize=A4)
-    elements = []
-    styles = getSampleStyleSheet()
+    p = canvas.Canvas(response, pagesize=landscape(A4))
 
-    title = Paragraph("Asset Report", styles['Title'])
-    elements.append(title)
-
-    data = [
-        ["Title", "Status", "Created Date", "Updated Date"]
+    headers = [
+        "Asset Name", "Category", "Subcategory", "Department", "Location",
+        "Condition", "Purchase Date", "Warranty Expiry", "Assigned To", "Remarks"
     ]
 
+    x_positions = [20, 120, 220, 340, 450, 550, 650, 750, 860, 960]
+    y = 550
+
+    # Draw header
+    for i, h in enumerate(headers):
+        p.drawString(x_positions[i], y, h)
+    y -= 25
+
+    assets = AssetCreate.objects.all()
+
     for a in assets:
-        data.append([
-            a.title,
-            "Active" if a.status else "Inactive",
-            a.created_date.strftime("%Y-%m-%d %H:%M:%S"),
-            a.updated_date.strftime("%Y-%m-%d %H:%M:%S")
-        ])
+        row = [
+            a.assetname,
+            a.category.title if a.category else "",
+            a.subcategory.title if a.subcategory else "",
+            a.department.title if a.department else "",
+            a.location.location if a.location else "",
+            a.condition,
+            a.purchase_date.strftime("%d-%m-%Y") if a.purchase_date else "",
+            a.warrenty_expiry.strftime("%d-%m-%Y") if a.warrenty_expiry else "",
+            a.assigned_to,
+            a.remarks
+        ]
 
-    table = Table(data, repeatRows=1)
-    table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-    ]))
+        for i, value in enumerate(row):
+            p.drawString(x_positions[i], y, str(value))
+        y -= 20
 
-    elements.append(table)
-    doc.build(elements)
+        if y < 40:
+            p.showPage()
+            y = 550
+
+    p.save()
     return response

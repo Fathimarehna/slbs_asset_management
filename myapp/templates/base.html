@@ -109,9 +109,7 @@
 <div class="sb-sidenav" id="sidebarMenu">
     <nav class="nav flex-column">
 
-        <a class="nav-link {% if request.path == '/assetform/' %}active{% endif %}" href="{% url 'assetlist' %}">
-            <i class="fas fa-box me-2"></i> Asset Form
-        </a>
+        
 
         <a class="nav-link {% if request.path == '/assetid/' %}active{% endif %}" href="{% url 'assetid' %}">
             <i class="fas fa-box me-2"></i> Asset Id
@@ -133,9 +131,16 @@
             <i class="fas fa-map-marker-alt me-2"></i> Locations
         </a>
 
-        <a class="nav-link {% if request.path == '/users/' %}active{% endif %}" href="{% url 'users' %}">
-            <i class="fas fa-users me-2"></i> Users
+
+        <a class="nav-link {% if request.path == '/assetform/' %}active{% endif %}" href="{% url 'assetlist' %}">
+            <i class="fas fa-box me-2"></i> Asset Form
         </a>
+
+        <a class="nav-link {% if request.path == '/users/' %}active{% endif %}" href="{% url 'users' %}">
+            <i class="fas fa-users me-2"></i>Add User
+        </a>
+
+
 
         <a class="nav-link {% if request.path == '/asset_report/' %}active{% endif %}" href="{% url 'asset_report' %}">
             <i class="fas fa-chart-line me-2"></i> Asset Report
