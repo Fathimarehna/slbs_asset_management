@@ -580,7 +580,7 @@ def download_asset_report_excel(request):
     ws = wb.active
     ws.title = "Asset Report"
 
-    headers = ["Title", "Status", "Created Date", "Updated Date"]
+    headers = ["Asset Name", "Status", "Created Date", "Updated Date"]
     ws.append(headers)
 
     for a in assets:
