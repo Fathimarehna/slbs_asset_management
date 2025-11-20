@@ -2,35 +2,79 @@
 {% load static %}
 
 {% block content %}
+ <h3 style="
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 1px;
+    
+    color: #101010;
+    text-transform: uppercase;">
+    Add New Asset
+</h3>
 
-<div class="container mt-4">
+
+<div class="container mt-4" >
     <div class="row justify-content-center">
-        <div class="col-lg-8 col-md-10 col-sm-12">
-
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-header bg-primary text-white text-center rounded-top-4">
-                    <h4 class="mb-0">Add New Asset</h4>
-                </div>
-
+        <div class="col-12 col-md-10 col-lg-8">
+           
+            <div class="card border-0 shadow-sm rounded-2" style="background-color:#dadde1;">
+                
+                    
+              
                 <div class="card-body p-4">
-                    <form method="POST" novalidate>
+                    <form method="POST" novalidate enctype="multipart/form-data">
                         {% csrf_token %}
-                        
-                        {% for field in form %}
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">{{ field.label }}</label>
-                                <div class="w-100">
-                                    {{ field }}
-                                </div>
 
-                                {% if field.errors %}
-                                    <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+                        <div class="row">
+
+                            {% for field in form %}
+
+                                {% if field.name == "assetname" %}
+                                    <!-- Asset Name FULL width -->
+                                    <div class="col-12 mb-3">
+                                        <label class="form-label fw-semibold">{{ field.label }}</label>
+                                        {{ field }}
+                                        {% if field.errors %}
+                                            <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+                                        {% endif %}
+                                    </div>
+
+                                {% elif field.name == "description" %}
+                                    <!-- Description FULL width -->
+                                    <div class="col-12 mb-3">
+                                        <label class="form-label fw-semibold">{{ field.label }}</label>
+                                        {{ field }}
+                                        {% if field.errors %}
+                                            <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+                                        {% endif %}
+                                    </div>
+                                {% elif field.name == "remarks" %}
+                                    <!-- Description FULL width -->
+                                    <div class="col-12 mb-3">
+                                        <label class="form-label fw-semibold">{{ field.label }}</label>
+                                        {{ field }}
+                                        {% if field.errors %}
+                                            <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+                                        {% endif %}
+                                    </div>
+
+                                {% else %}
+                                    <!-- Other fields HALF width -->
+                                    <div class="col-12 col-md-6 mb-3">
+                                        <label class="form-label fw-semibold">{{ field.label }}</label>
+                                        {{ field }}
+                                        {% if field.errors %}
+                                            <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+                                        {% endif %}
+                                    </div>
+
                                 {% endif %}
-                            </div>
-                        {% endfor %}
+
+                            {% endfor %}
+                        </div>
 
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="{% url 'user_dashboard' %}" class="btn btn-outline-secondary px-4">Back</a>
+                            <a href="{% url 'user_dashboard' %}" class="btn btn-secondary px-4">Back</a>
                             <button type="submit" class="btn btn-success px-4">Save</button>
                         </div>
                     </form>
@@ -41,10 +85,10 @@
     </div>
 </div>
 
+
 <style>
-    body {
-        background-color: #f8f9fa;
-    }
+    body { background-color: #f8f9fa; }
+
     input, textarea, select {
         width: 100% !important;
         border-radius: 8px;
@@ -54,20 +98,16 @@
     }
     input:focus, textarea:focus, select:focus {
         border-color: #0d6efd;
-        box-shadow: 0 0 4px rgba(13, 110, 253, 0.3);
+        box-shadow: 0 0 4px rgba(13,110,253,0.3);
         outline: none;
-    }
-    label {
-        font-weight: 600;
     }
 </style>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   $("#id_category").change(function () {
     var categoryId = $(this).val();
-
     $("#id_subcategory").html('<option value="">-----------</option>');
 
     if (categoryId) {
@@ -87,4 +127,3 @@
 </script>
 
 {% endblock %}
-

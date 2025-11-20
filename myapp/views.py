@@ -343,21 +343,6 @@ def toggle_locations_status(request, pk):
 
 
 
-
-
-
-# from .forms import UserForm
-
-# def create_user(request):
-#     if request.method == 'POST':
-#         form = UserForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('user_list')  # redirect to user list page
-#     else:
-#         form = UserForm()
-#     return render(request, 'create_user.html', {'form': form})
-
 @login_required
 def toggle_user_status(request, pk):
     user = get_object_or_404(User, pk=pk)
