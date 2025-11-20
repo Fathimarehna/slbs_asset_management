@@ -17,8 +17,9 @@ class AssetForm(forms.ModelForm):
 
     title = forms.CharField(
         max_length=10,
+        label="Enter Asset ID ",
         validators=[
-            MinLengthValidator(3,message='Minimum 3 charecters required , '),
+            MinLengthValidator(3,message='Minimum 3 characters required , '),
             RegexValidator(
                 regex=r'^[A-Za-z0-9 ]+$',
                 message='Only letters, numbers and spaces are allowed.'
@@ -35,8 +36,9 @@ class AssetForm(forms.ModelForm):
 class CategoryForm(forms.ModelForm):
     title = forms.CharField(
         max_length=30,
+        label="Enter Category Name",
         validators=[
-            MinLengthValidator(3,message='Minimum 3 charecters required'),
+            MinLengthValidator(2,message='Minimum 2 characters required'),
             RegexValidator(
                 regex=r'^[A-Za-z ]+$',
                 message='Only letters and spaces are allowed.'
@@ -47,13 +49,17 @@ class CategoryForm(forms.ModelForm):
         model = Category
         fields = ['asset', 'title']
 
+        labels = {
+            'asset': 'Select Asset ID',
+        }
 
 
 class SubCategoryForm(forms.ModelForm):
     title = forms.CharField(
         max_length=30,
+        label="Enter Sub Category Name",
         validators=[
-            MinLengthValidator(3,message='Minimum 3 charecters required'),
+            MinLengthValidator(2,message='Minimum 2 characters required'),
             RegexValidator(
                 regex=r'^[A-Za-z ]+$',
                 message='Only letters and spaces are allowed.'
@@ -63,13 +69,17 @@ class SubCategoryForm(forms.ModelForm):
     class Meta:
         model=SubCategory
         fields=['category','title']
+        labels = {
+            'category': 'Select Category',
+        }
 
 
 class DepartmentForm(forms.ModelForm):
     title = forms.CharField(
         max_length=30,
+        label="Enter Department Name ",
         validators=[
-            MinLengthValidator(3,message='Minimum 3 charecters required'),
+            MinLengthValidator(2,message='Minimum 2 characters required'),
             RegexValidator(
                 regex=r'^[A-Za-z ]+$',
                 message='Only letters and spaces are allowed.'
@@ -79,6 +89,7 @@ class DepartmentForm(forms.ModelForm):
     class Meta:
         model = Department
         fields = ['title']
+        
 
         
 # class UserForm(forms.ModelForm):
@@ -93,8 +104,9 @@ class LocationForm(forms.ModelForm):
 
     location = forms.CharField(
         max_length=20,
+        label="Enter Location ",
         validators=[
-            MinLengthValidator(3,message='Minimum 3 charecters required , '),
+            MinLengthValidator(2,message='Minimum 2 characters required , '),
             RegexValidator(
                 regex=r'^[A-Za-z ]+$',
                 message='Only letters and spaces are allowed.'
@@ -110,7 +122,7 @@ class AssetCreateForm(forms.ModelForm):
     assetname = forms.CharField(
         max_length=30,
         validators=[
-            MinLengthValidator(3,message='Minimum 3 charecters required. '),
+            MinLengthValidator(2,message='Minimum 2 charecters required. '),
             RegexValidator(
                 regex=r'^[A-Za-z ]+$',
                 message='Only letters and spaces are allowed.'
@@ -122,7 +134,7 @@ class AssetCreateForm(forms.ModelForm):
     make = forms.CharField(
         max_length=10,
         validators=[
-            MinLengthValidator(3, message='Minimum 3 characters required.'),
+            MinLengthValidator(2, message='Minimum 2 characters required.'),
             RegexValidator(
                 regex=r'^[A-Za-z0-9 ]+$',
                 message='Only letters, numbers and spaces are allowed.'
@@ -176,6 +188,22 @@ class AssetCreateForm(forms.ModelForm):
         # If editing an existing record, show relevant subcategories
         elif self.instance.pk:
             self.fields['subcategory'].queryset = self.instance.category.subcategories.all()
+    
+
+
+    def clean(self):
+        cleaned_data = super().clean()
+        purchase_date = cleaned_data.get("purchase_date")
+        warranty_date = cleaned_data.get("warrenty_expiry")
+
+        if purchase_date and warranty_date:
+            if warranty_date < purchase_date:
+                self.add_error(
+                    "warrenty_expiry",
+                    "Warranty expiry date cannot be earlier than purchase date."
+                )
+
+        return cleaned_data
 
 
 
