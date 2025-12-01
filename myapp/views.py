@@ -22,6 +22,7 @@ from django.contrib.auth.decorators import user_passes_test
 
 from django.contrib import messages
 from django.http import JsonResponse
+from django.db.models import Count
 
 # from .forms import UserForm
 
@@ -70,7 +71,25 @@ def admin_only(user):
 @login_required
 @user_passes_test(admin_only, login_url='/userhome/')
 def admin_dashboard(request):
-    return render(request, 'admin_dashboard.html')
+    total_assets = AssetCreate.objects.count()
+
+    good_assets = AssetCreate.objects.filter(condition='Good').count()
+    fair_assets = AssetCreate.objects.filter(condition='Fair').count()
+    poor_assets = AssetCreate.objects.filter(condition='Poor').count()
+
+    available_assets = AssetCreate.objects.filter(status=True).count()
+    used_assets = AssetCreate.objects.filter(status=False).count()
+
+    context = {
+        'total_assets': total_assets,
+        'good_assets': good_assets,
+        'fair_assets': fair_assets,
+        'poor_assets': poor_assets,
+        'available_assets': available_assets,
+        'used_assets': used_assets,
+    }
+    return render(request, 'admin_dashboard.html', context)
+   
 
 @login_required
 def user_dashboard(request):
@@ -96,6 +115,8 @@ def assetid(request):
             return redirect('assetid')  # refresh page after submission
 
     return render(request, 'assetid.html', {'assets': assets, 'form': form})
+
+
 
 
 @login_required
@@ -343,21 +364,6 @@ def toggle_locations_status(request, pk):
 
 
 
-
-
-
-# from .forms import UserForm
-
-# def create_user(request):
-#     if request.method == 'POST':
-#         form = UserForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('user_list')  # redirect to user list page
-#     else:
-#         form = UserForm()
-#     return render(request, 'create_user.html', {'form': form})
-
 @login_required
 def toggle_user_status(request, pk):
     user = get_object_or_404(User, pk=pk)
@@ -380,27 +386,14 @@ def user_update(request, pk):
     return render(request, 'user_form.html', {'form': form})
 
 
-# def user_delete(request, pk):
-#     users = get_object_or_404(User, pk=pk)
-#     if request.method == 'POST':
-#        users.delete()
-#        return redirect('users_list') 
-#     return render(request, 'user_confirm_delete.html', {'users': users})
+
 @login_required
 @user_passes_test(admin_only, login_url='/userhome/')
 def users_view(request):
     users = User.objects.all()
     return render(request, 'users.html', {'users': users})
 
-# @login_required
-# def add_user(request):
-#     if request.method == 'POST':
-#         username = request.POST.get('username')
-#         email = request.POST.get('email')
-#         password = request.POST.get('password')
-#         User.objects.create_user(username=username, email=email, password=password)
-#         return redirect('users')
-#     return render(request, 'add_user.html')
+
 @login_required
 @user_passes_test(admin_only, login_url='/userhome/')
 def add_user(request):
@@ -523,11 +516,20 @@ def add_user(request):
     return render(request, 'add_user.html')
 
 
+
+from django.db.models import Q
 @user_passes_test(admin_only, login_url='/userhome/')
 def asset_report(request):
-    assets = AssetCreate.objects.all()
+    assets = AssetCreate.objects.all().order_by("assetname")
 
     # --- get filter values from form ---
+
+    search = request.GET.get("search", "")
+    if search:
+        assets = assets.filter(
+            Q(assetname__istartswith=search) 
+        )
+
     category = request.GET.get('category')
     subcategory = request.GET.get('subcategory')
     location = request.GET.get('location')
@@ -547,11 +549,14 @@ def asset_report(request):
         assets = assets.filter(department=department)
     if condition:
         assets = assets.filter(condition=condition)
-    if date_from and date_to:
-        assets = assets.filter(purchase_date__range=[date_from, date_to])
+    if date_from:
+        assets = assets.filter(purchase_date__gte=date_from)
+    if date_to:
+        assets = assets.filter(purchase_date__lte=date_to)
 
     context = {
         'assets': assets,
+        'search':search,
         'categories': Category.objects.all(),
         'subcategories':SubCategory.objects.all(),
         'departments': Department.objects.all(),
@@ -559,6 +564,12 @@ def asset_report(request):
         'conditions': AssetCreate.CONDITION_CHOICES,
     }
     return render(request, 'report.html', context)
+
+#search option
+
+
+
+
 
 
 # AJAX view for dependent subcategory dropdown
@@ -610,34 +621,38 @@ def download_asset_report_excel(request):
     return response
 
 
+
 from reportlab.lib.pagesizes import landscape, A4
 from reportlab.pdfgen import canvas
+from reportlab.platypus import Table, TableStyle, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
 from django.http import HttpResponse
 from .models import AssetCreate
 
 def download_asset_report_pdf(request):
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="asset_report.pdf"'
+    response['Content-Disposition'] = 'attachment; filename=\"asset_report.pdf\"'
 
     p = canvas.Canvas(response, pagesize=landscape(A4))
+
+    styles = getSampleStyleSheet()
+    wrap_style = styles["BodyText"]
+    wrap_style.fontSize = 9
 
     headers = [
         "Asset Name", "Category", "Subcategory", "Department", "Location",
         "Condition", "Purchase Date", "Warranty Expiry", "Assigned To", "Remarks"
     ]
 
-    x_positions = [20, 120, 220, 340, 450, 550, 650, 750, 860, 960]
-    y = 550
-
-    # Draw header
-    for i, h in enumerate(headers):
-        p.drawString(x_positions[i], y, h)
-    y -= 25
+    data = [headers]
 
     assets = AssetCreate.objects.all()
 
     for a in assets:
-        row = [
+        remarks_para = Paragraph(a.remarks if a.remarks else "", wrap_style)  # WRAP HERE
+
+        data.append([
             a.assetname,
             a.category.title if a.category else "",
             a.subcategory.title if a.subcategory else "",
@@ -647,16 +662,28 @@ def download_asset_report_pdf(request):
             a.purchase_date.strftime("%d-%m-%Y") if a.purchase_date else "",
             a.warrenty_expiry.strftime("%d-%m-%Y") if a.warrenty_expiry else "",
             a.assigned_to,
-            a.remarks
-        ]
+            remarks_para,   # USE PARAGRAPH
+        ])
 
-        for i, value in enumerate(row):
-            p.drawString(x_positions[i], y, str(value))
-        y -= 20
+    # Create the table with wider remarks column
+    table = Table(
+        data,
+        colWidths=[70, 70, 70, 70, 70, 70, 80, 80, 70, 120]  # Remarks column = 120 width
+    )
 
-        if y < 40:
-            p.showPage()
-            y = 550
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), colors.lightgrey),
+        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0,0), (-1,-1), 9),
+        ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        ('GRID', (0,0), (-1,-1), 0.3, colors.grey),
+        ('LEFTPADDING', (0,0), (-1,-1), 5),
+        ('RIGHTPADDING', (0,0), (-1,-1), 5),
+    ]))
+
+    table.wrapOn(p, 30, 400)
+    table.drawOn(p, 30, 420)
 
     p.save()
     return response

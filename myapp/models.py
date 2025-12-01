@@ -12,7 +12,6 @@ class Asset(models.Model):
     def __str__(self):
         return self.title
 
-
 class Category(models.Model):
     asset = models.OneToOneField('Asset', on_delete=models.CASCADE, related_name='category')
     # asset = models.ForeignKey('Asset', on_delete=models.CASCADE, related_name='categories')
@@ -71,13 +70,7 @@ class User(models.Model):
         return self.name
 
 
-# class CustomUser(AbstractUser):
-#     ROLE_CHOICES=[('admin','Admin'),('user','User')]
-#     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
-#     phone = models.CharField(max_length=15, blank=True, null=True)
 
-#     def __str__(self):
-#         return self.username
 
 
 class AssetCreate(models.Model):

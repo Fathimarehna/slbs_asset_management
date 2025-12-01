@@ -3,8 +3,23 @@
 
 {% block content %}
 
-<br>
-<br>
+<style>
+  h5{
+    font-weight: bold;
+  }
+
+  .card-icon {
+    font-size: 30px;
+    color: white;
+    background-color: rgb(202, 139, 151);
+    padding: 10px;
+    border-radius: 60%;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+
+</style>
 
 {% if messages %}
     {% for message in messages %}
@@ -14,117 +29,56 @@
     {% endfor %}
 {% endif %}
 
-<div id="layoutSidenav_content">
-    <main>
-        <div class="container-fluid px-4">
 
-            <h1 class="mt-4">Dashboard</h1>
-            <ol class="breadcrumb mb-4">
-                <li class="breadcrumb-item active">Dashboard</li>
-            </ol>
 
-            <!-- Responsive Cards -->
-            <div class="row g-3">
-                <div class="col-xl-3 col-md-6 col-sm-12">
-                    <div class="card bg-primary text-white mb-4">
-                        <div class="card-body">Primary Card</div>
-                        <div class="card-footer d-flex align-items-center justify-content-between">
-                            <a class="small text-white stretched-link" href="#">View Details</a>
-                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                        </div>
-                    </div>
-                </div>
+<div class="container mt-3 p-5" style="background-color: rgb(204, 211, 236);">
+    
+    <div class="row">
 
-                <div class="col-xl-3 col-md-6 col-sm-12">
-                    <div class="card bg-warning text-white mb-4">
-                        <div class="card-body">Warning Card</div>
-                        <div class="card-footer d-flex align-items-center justify-content-between">
-                            <a class="small text-white stretched-link" href="#">View Details</a>
-                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-3 col-md-6 col-sm-12">
-                    <div class="card bg-success text-white mb-4">
-                        <div class="card-body">Success Card</div>
-                        <div class="card-footer d-flex align-items-center justify-content-between">
-                            <a class="small text-white stretched-link" href="#">View Details</a>
-                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-3 col-md-6 col-sm-12">
-                    <div class="card bg-danger text-white mb-4">
-                        <div class="card-body">Danger Card</div>
-                        <div class="card-footer d-flex align-items-center justify-content-between">
-                            <a class="small text-white stretched-link" href="#">View Details</a>
-                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Responsive Charts -->
-            <div class="row">
-                <div class="col-xl-6 col-sm-12 mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <i class="fas fa-chart-area me-1"></i>
-                            Area Chart Example
-                        </div>
-                        <div class="card-body">
-                            <canvas id="myAreaChart" height="200"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-6 col-sm-12 mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <i class="fas fa-chart-bar me-1"></i>
-                            Bar Chart Example
-                        </div>
-                        <div class="card-body">
-                            <canvas id="myBarChart" height="200"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Responsive Table -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <i class="fas fa-table me-1"></i>
-                    DataTable Example
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="datatablesSimple" class="table table-bordered table-striped">
-                            {{ table_content | safe }}
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </main>
-
-    <footer class="py-4 bg-light mt-auto">
-        <div class="container-fluid px-4">
-            <div class="d-flex align-items-center justify-content-between small">
-                <div class="text-muted">Copyright © Your Website 2023</div>
-                <div>
-                    <a href="#">Privacy Policy</a>
-                    &middot;
-                    <a href="#">Terms &amp; Conditions</a>
-                </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm p-3">
+                
+               
+                <h2><i class="fa-solid fa-briefcase card-icon"></i>  {{ total_assets }}</h2>
+                 <h5>Total Assets</h5>
             </div>
         </div>
-    </footer>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm p-3">
+               
+                <h2><i class="fa-solid fa-square-check card-icon"></i>  {{ good_assets }}</h2>
+                 <h5>Good Condition</h5>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm p-3">
+                
+                <h2><i class="fa-solid fa-star-half-stroke card-icon"></i>  {{ fair_assets }}</h2>
+                <h5>Fair Condition</h5>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm p-3">
+                
+                <h2><i class="fa-solid fa-circle-xmark card-icon"></i>  {{ poor_assets }}</h2>
+                <h5>Poor Condition</h5>
+            </div>
+        </div>
+
+    </div>
+
+
 </div>
 
+<!-- 
+    <div class="text-center mt-4 mb-4">
+    <img src="{% static 'assets/laptopbg.jpg' %}" 
+         alt="Dashboard Image" 
+         style=" max-width: 500px;  border-radius: 10px;">
+</div> -->
+
+
 {% endblock %}
-
-
