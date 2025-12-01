@@ -6,14 +6,14 @@
 
 
 <h1 class="text-dark text-center fw-bold mt-5">Asset Management</h1>
-<br>
+
 
 <div class="text-end px-4">
     <a href="{% url 'asset_create' %}" class="btn btn-danger">Add New Asset ID</a>
     <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Back</a>
 </div>
 
-<br><br>
+
 <div class="custom-card">
 <div class="container mt-3">
     <div class="table-responsive shadow-sm rounded-1">
@@ -33,7 +33,7 @@
             <tbody>
                 {% for asset in assets %}
                 <tr>
-                    <td class="text-center">{{ forloop.counter }}</td>
+                    <td>{{ forloop.counter }}</td>
                     <td>{{ asset.title }}</td>
 
                     <td class="text-center">

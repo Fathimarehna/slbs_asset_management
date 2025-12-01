@@ -4,14 +4,13 @@
 {% block content %}
 
 <h1 class="text-dark text-center fw-bold mt-5">Subcategory</h1>
-<br>
+
 
 <div class="text-end px-4">
-    <a href="{% url 'subcategory_create' %}" class="btn btn-danger">Add New Subcategory</a>
+    <a href="{% url 'subcategory_create' %}" class="btn btn-danger"><i class="fas fa-plus"></i>  Add New Subcategory</a>
     <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Back</a>
 </div>
 
-<br>
 
 <!-- Responsive Table Wrapper -->
 <div class="container mt-4">
@@ -33,7 +32,7 @@
             <tbody>
                 {% for subcategory in subcategories %}
                 <tr>
-                    <td class="text-center">{{ forloop.counter }}</td>
+                    <td>{{ forloop.counter }}</td>
                     <td>{{ subcategory.title }}</td>
                     <td>{{ subcategory.category.title }}</td>
 

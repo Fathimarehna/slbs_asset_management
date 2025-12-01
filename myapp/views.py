@@ -22,6 +22,7 @@ from django.contrib.auth.decorators import user_passes_test
 
 from django.contrib import messages
 from django.http import JsonResponse
+from django.db.models import Count
 
 # from .forms import UserForm
 
@@ -70,7 +71,25 @@ def admin_only(user):
 @login_required
 @user_passes_test(admin_only, login_url='/userhome/')
 def admin_dashboard(request):
-    return render(request, 'admin_dashboard.html')
+    total_assets = AssetCreate.objects.count()
+
+    good_assets = AssetCreate.objects.filter(condition='Good').count()
+    fair_assets = AssetCreate.objects.filter(condition='Fair').count()
+    poor_assets = AssetCreate.objects.filter(condition='Poor').count()
+
+    available_assets = AssetCreate.objects.filter(status=True).count()
+    used_assets = AssetCreate.objects.filter(status=False).count()
+
+    context = {
+        'total_assets': total_assets,
+        'good_assets': good_assets,
+        'fair_assets': fair_assets,
+        'poor_assets': poor_assets,
+        'available_assets': available_assets,
+        'used_assets': used_assets,
+    }
+    return render(request, 'admin_dashboard.html', context)
+   
 
 @login_required
 def user_dashboard(request):
@@ -508,11 +527,20 @@ def add_user(request):
     return render(request, 'add_user.html')
 
 
+
+from django.db.models import Q
 @user_passes_test(admin_only, login_url='/userhome/')
 def asset_report(request):
-    assets = AssetCreate.objects.all()
+    assets = AssetCreate.objects.all().order_by("assetname")
 
     # --- get filter values from form ---
+
+    search = request.GET.get("search", "")
+    if search:
+        assets = assets.filter(
+            Q(assetname__istartswith=search) 
+        )
+
     category = request.GET.get('category')
     subcategory = request.GET.get('subcategory')
     location = request.GET.get('location')
@@ -532,11 +560,14 @@ def asset_report(request):
         assets = assets.filter(department=department)
     if condition:
         assets = assets.filter(condition=condition)
-    if date_from and date_to:
-        assets = assets.filter(purchase_date__range=[date_from, date_to])
+    if date_from:
+        assets = assets.filter(purchase_date__gte=date_from)
+    if date_to:
+        assets = assets.filter(purchase_date__lte=date_to)
 
     context = {
         'assets': assets,
+        'search':search,
         'categories': Category.objects.all(),
         'subcategories':SubCategory.objects.all(),
         'departments': Department.objects.all(),
@@ -544,6 +575,12 @@ def asset_report(request):
         'conditions': AssetCreate.CONDITION_CHOICES,
     }
     return render(request, 'report.html', context)
+
+#search option
+
+
+
+
 
 
 # AJAX view for dependent subcategory dropdown
@@ -645,3 +682,10 @@ def download_asset_report_pdf(request):
 
     p.save()
     return response
+
+
+
+
+
+
+    

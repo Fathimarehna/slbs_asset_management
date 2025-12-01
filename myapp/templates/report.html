@@ -8,15 +8,19 @@
     <title>Asset Report</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
+
+        
+    
         body { font-family: Arial;  }
         form { margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
         label { font-weight: bold; }
-        select, input { padding: 5px; }
+        select, input { padding: 5px; width: 300px;}
         button { padding: 5px 10px; background-color: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px; }
         button:hover { background-color: #0056b3; }
         table { border-collapse: collapse; width: 100%; margin-top: 15px; }
         th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background-color: #f5f5f5; }
+        th { background-color: #f5f5f5; }       
+        
     </style>
 </head>
 <body>
@@ -25,8 +29,23 @@
 
     <h2 class="text-center fw-bold mb-4">Asset Report</h2>
 
+    <br>
+
+    
+    <form method="get" class="mb-3" style="text-align: right;">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search assets..."
+           class="form-control" style="max-width:200px; display:inline-block;">
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
     <div class="text-end pb-3">
+
+
+
+        
+        
         <a href="{% url 'admin_dashboard' %}" class="btn btn-primary">Back</a>
+    
+
     </div>
 
     <!-- Filter Form -->
@@ -109,7 +128,7 @@
             </div>
 
             <!-- Submit -->
-            <div class="col-12 col-md-6 col-lg-3 d-flex align-items-end">
+            <div class="col-12 col-md-6 col-lg-3 d-flex align-items-end" >
                 <button type="submit" class="btn btn-primary w-100">Filter</button>
             </div>
 
@@ -127,6 +146,9 @@
        class="btn btn-danger">
         Download PDF
     </a>
+    <a href="{% url 'asset_report' %}" class="btn btn-secondary">Reset</a>
+
+    
 </div>
 
 
@@ -135,6 +157,7 @@
         <table class="table table-bordered table-striped text-center">
             <thead class="table-dark">
                 <tr>
+                    <th>Serial No.</th>
                     <th>Asset Name</th>
                     <th>Category</th>
                     <th>Subcategory</th>
@@ -151,6 +174,7 @@
             <tbody>
                 {% for a in assets %}
                 <tr>
+                    <td>{{ forloop.counter }}</td>
                     <td>{{ a.assetname }}</td>
                     <td>{{ a.category }}</td>
                     <td>{{ a.subcategory }}</td>

@@ -203,6 +203,12 @@ class AssetCreateForm(forms.ModelForm):
                     "Warranty expiry date cannot be earlier than purchase date."
                 )
 
+            if warranty_date == purchase_date:
+                self.add_error(
+                    "warrenty_expiry",
+                    "Warranty expiry date cannot be the same as purchase date."
+            )
+
         return cleaned_data
 
 

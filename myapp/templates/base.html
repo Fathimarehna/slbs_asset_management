@@ -112,6 +112,10 @@
 <div class="sb-sidenav" id="sidebarMenu">
     <nav class="nav flex-column">
 
+        <a class="nav-link {% if request.path == '/adminhome/' %}active{% endif %}" href="{% url 'admin_dashboard' %}">
+            <i class="fas fa-box me-2"></i> Dashboard
+        </a>
+
         <a class="nav-link {% if request.path == '/assetid/' %}active{% endif %}" href="{% url 'assetid' %}">
             <i class="fas fa-box me-2"></i> Asset Id
         </a>
