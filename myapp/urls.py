@@ -71,5 +71,7 @@ urlpatterns = [
     path('reports/download/excel/', views.download_asset_report_excel, name='download_asset_report_excel'),
     path('reports/download/pdf/', views.download_asset_report_pdf, name='download_asset_report_pdf'),
 
+  
+
 
 ]

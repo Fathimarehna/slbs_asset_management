@@ -1,0 +1,15 @@
+{% comment %} {% extends 'base.html' %}
+{% block content %}
+
+<h2>Import Assets (Excel Upload)</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <label>Select Excel File (.xlsx)</label>
+    <input type="file" name="file" required class="form-control">
+
+    <button class="btn btn-success mt-3">Upload</button>
+</form>
+
+{% endblock %} {% endcomment %}

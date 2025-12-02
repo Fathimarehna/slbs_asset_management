@@ -687,3 +687,83 @@ def download_asset_report_pdf(request):
 
     p.save()
     return response
+
+
+
+
+
+
+
+
+
+
+import openpyxl
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import AssetCreate, Category, SubCategory, Department, Location
+
+def import_assets(request):
+    if request.method == "POST":
+        file = request.FILES.get("file")
+
+        if not file:
+            messages.error(request, "Please upload an Excel file.")
+            return redirect("import_assets")
+
+        if not file.name.endswith(".xlsx"):
+            messages.error(request, "Only .xlsx files are allowed.")
+            return redirect("import_assets")
+
+        wb = openpyxl.load_workbook(file)
+        sheet = wb.active
+
+        count = 0
+
+        # Skip header row → start from row 2
+        for row in sheet.iter_rows(min_row=2, values_only=True):
+            assetname, category_name, subcategory_name, department_name, location_name, condition, purchase_date, warrenty_expiry, assigned_to, remarks = row
+
+            # Fetch or ignore foreign key fields
+            try:
+                category = Category.objects.get(title=category_name)
+            except:
+                category = None
+
+            try:
+                subcategory = SubCategory.objects.get(title=subcategory_name)
+            except:
+                subcategory = None
+
+            try:
+                department = Department.objects.get(title=department_name)
+            except:
+                department = None
+
+            try:
+                location = Location.objects.get(location=location_name)
+            except:
+                location = None
+
+            AssetCreate.objects.create(
+                assetname=assetname,
+                category=category,
+                subcategory=subcategory,
+                department=department,
+                location=location,
+                condition=condition,
+                purchase_date=purchase_date,
+                warrenty_expiry=warrenty_expiry,
+                assigned_to=assigned_to,
+                remarks=remarks,
+            )
+
+            count += 1
+
+        messages.success(request, f"{count} assets imported successfully!")
+        return redirect("assetlist")
+
+    return render(request, "import_assets.html")
+  
+
+
+
