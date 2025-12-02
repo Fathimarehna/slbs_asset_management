@@ -440,6 +440,8 @@ def assetformlist(request):
 @login_required
 def assetformcreate(request):
     if request.method=='POST':
+        print("POST request received")
+        print("FILES received:", request.FILES) 
         form=AssetCreateForm(request.POST,request.FILES)
         if form.is_valid():
             form.save()
@@ -453,7 +455,7 @@ def assetform_update(request,pk):
     
     asset = get_object_or_404(AssetCreate, pk=pk)
     if request.method == 'POST':
-        form =  AssetCreateForm(request.POST, instance=asset)
+        form =  AssetCreateForm(request.POST,request.FILES, instance=asset)
         if form.is_valid():
             form.save()
             return redirect('assetlist')

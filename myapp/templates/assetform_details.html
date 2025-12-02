@@ -27,6 +27,13 @@
                     <p><strong>Sub Category:</strong> {{ asset.subcategory.title }}</p>
                     <p><strong>Condition:</strong> {{ asset.condition }}</p>
                     <p style="text-align: justify;"><strong>Remarks:</strong> {{ asset.remarks }}</p>
+                    <p><strong>File : </strong>
+                        {% if asset.file %}
+                            <a href="{{ asset.file.url }}" target="_blank">  View File</a>
+                        {% else %}
+                            No file uploaded
+                        {% endif %}
+                    </p>
 
                 </div>
 
