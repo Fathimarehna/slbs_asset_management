@@ -7,7 +7,7 @@
     <div class="row justify-content-center">
         <div class="col-lg-6 col-md-8 col-sm-12">
 
-            <div class="card border-0 rounded-4 shadow-sm" style="width: 700px;">
+            <div class="card border-0 rounded-4 shadow-sm" style="width: 600px;">
                 <div class="card-header bg-secondary text-dark text-center rounded-top-4">
                     <h2 class="mb-0">Asset Details</h2>
                 </div>
@@ -27,6 +27,13 @@
                     <p><strong>Sub Category:</strong> {{ asset.subcategory.title }}</p>
                     <p><strong>Condition:</strong> {{ asset.condition }}</p>
                     <p style="text-align: justify;"><strong>Remarks:</strong> {{ asset.remarks }}</p>
+                    <p><strong>File : </strong>
+                        {% if asset.file %}
+                            <a href="{{ asset.file.url }}" target="_blank">  View File</a>
+                        {% else %}
+                            No file uploaded
+                        {% endif %}
+                    </p>
 
                 </div>
 

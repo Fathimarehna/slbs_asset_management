@@ -440,6 +440,8 @@ def assetformlist(request):
 @login_required
 def assetformcreate(request):
     if request.method=='POST':
+        print("POST request received")
+        print("FILES received:", request.FILES) 
         form=AssetCreateForm(request.POST,request.FILES)
         if form.is_valid():
             form.save()
@@ -453,7 +455,7 @@ def assetform_update(request,pk):
     
     asset = get_object_or_404(AssetCreate, pk=pk)
     if request.method == 'POST':
-        form =  AssetCreateForm(request.POST, instance=asset)
+        form =  AssetCreateForm(request.POST,request.FILES, instance=asset)
         if form.is_valid():
             form.save()
             return redirect('assetlist')
@@ -480,7 +482,7 @@ def assetformuser(request):
         form=AssetCreateForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('user_dashboard')
+            return redirect('user_dashboard') 
     else:
         form=AssetCreateForm()
     return render(request,'assetformuser.html',{'form':form})
@@ -687,83 +689,116 @@ def download_asset_report_pdf(request):
 
     p.save()
     return response
-
-
-
-
-
-
-
-
-
-
-import openpyxl
+from openpyxl import load_workbook
 from django.shortcuts import render, redirect
-from django.contrib import messages
 from .models import AssetCreate, Category, SubCategory, Department, Location
 
-def import_assets(request):
-    if request.method == "POST":
-        file = request.FILES.get("file")
 
-        if not file:
-            messages.error(request, "Please upload an Excel file.")
-            return redirect("import_assets")
+def asset_report(request):
 
-        if not file.name.endswith(".xlsx"):
-            messages.error(request, "Only .xlsx files are allowed.")
-            return redirect("import_assets")
+    uploaded_data = []     # For Excel preview
 
-        wb = openpyxl.load_workbook(file)
+    # -------------------------
+    # 🔵 HANDLE EXCEL UPLOAD
+    # -------------------------
+    if request.method == "POST" and request.FILES.get("excel_file"):
+
+        excel_file = request.FILES["excel_file"]
+        wb = load_workbook(excel_file)
         sheet = wb.active
 
-        count = 0
+        # Store ALL rows for preview (including header)
+        for row in sheet.iter_rows(values_only=True):
+            uploaded_data.append(row)
 
-        # Skip header row → start from row 2
+        # Insert data into database (skip first row → header)
         for row in sheet.iter_rows(min_row=2, values_only=True):
-            assetname, category_name, subcategory_name, department_name, location_name, condition, purchase_date, warrenty_expiry, assigned_to, remarks = row
+            asset_name, category_name, subcat_name, dept_name, location_name, condition, purchase_date, warr_expiry, assigned_to, remarks = row
 
-            # Fetch or ignore foreign key fields
-            try:
-                category = Category.objects.get(title=category_name)
-            except:
-                category = None
+            # Fetch related foreign keys
+            category = Category.objects.filter(title=category_name).first()
+            subcategory = SubCategory.objects.filter(title=subcat_name).first()
+            department = Department.objects.filter(title=dept_name).first()
+            location = Location.objects.filter(location=location_name).first()
 
-            try:
-                subcategory = SubCategory.objects.get(title=subcategory_name)
-            except:
-                subcategory = None
+            # Skip if related items not found
+            if not category or not subcategory or not department or not location:
+                print("⚠️ Skipped row due to missing related data:", row)
+                continue
 
-            try:
-                department = Department.objects.get(title=department_name)
-            except:
-                department = None
-
-            try:
-                location = Location.objects.get(location=location_name)
-            except:
-                location = None
-
+            # Save into DB
             AssetCreate.objects.create(
-                assetname=assetname,
+                assetname=asset_name,
                 category=category,
                 subcategory=subcategory,
                 department=department,
                 location=location,
                 condition=condition,
                 purchase_date=purchase_date,
-                warrenty_expiry=warrenty_expiry,
+                warrenty_expiry=warr_expiry,
                 assigned_to=assigned_to,
                 remarks=remarks,
             )
 
-            count += 1
+        # Return SAME PAGE with preview
+        return render(request, "report.html", {
+            "uploaded_data": uploaded_data,
+            "assets": AssetCreate.objects.all(),
+            "categories": Category.objects.all(),
+            "subcategories": SubCategory.objects.all(),
+            "departments": Department.objects.all(),
+            "locations": Location.objects.all(),
+            "conditions": AssetCreate.CONDITION_CHOICES,
+            "search": request.GET.get("search", ""),
+        })
 
-        messages.success(request, f"{count} assets imported successfully!")
-        return redirect("assetlist")
+    # --------------------------------------
+    # 🔵 GET ALL ASSET DATA (PAGE LOAD)
+    # --------------------------------------
+    assets = AssetCreate.objects.all()
 
-    return render(request, "import_assets.html")
-  
+    # Search
+    search = request.GET.get("search")
+    if search:
+        assets = assets.filter(assetname__icontains=search)
 
+    # Filters
+    category = request.GET.get("category")
+    if category:
+        assets = assets.filter(category_id=category)
 
+    subcategory = request.GET.get("subcategory")
+    if subcategory:
+        assets = assets.filter(subcategory_id=subcategory)
+
+    location = request.GET.get("location")
+    if location:
+        assets = assets.filter(location_id=location)
+
+    department = request.GET.get("department")
+    if department:
+        assets = assets.filter(department_id=department)
+
+    condition = request.GET.get("condition")
+    if condition:
+        assets = assets.filter(condition=condition)
+
+    date_from = request.GET.get("date_from")
+    if date_from:
+        assets = assets.filter(purchase_date__gte=date_from)
+
+    date_to = request.GET.get("date_to")
+    if date_to:
+        assets = assets.filter(purchase_date__lte=date_to)
+
+    # Return page normally
+    return render(request, "report.html", {
+        "assets": assets,
+        "categories": Category.objects.all(),
+        "subcategories": SubCategory.objects.all(),
+        "departments": Department.objects.all(),
+        "locations": Location.objects.all(),
+        "conditions": AssetCreate.CONDITION_CHOICES,
+        "search": search,
+    })
 

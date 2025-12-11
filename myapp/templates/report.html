@@ -1,5 +1,649 @@
 {% extends 'base.html' %}
 {% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="text-center fw-bold mb-4">Asset Report</h2>
+
+    <!-- Search Form -->
+    <form method="get" class="mb-3 text-end">
+        <input type="text" name="search" value="{{ search }}" placeholder="Search assets..."
+               class="form-control" style="max-width:200px; display:inline-block;">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <!-- Back Button -->
+    <div class="text-end pb-3">
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-primary">Back</a>
+    </div>
+
+    <!-- Filter Form -->
+    <form method="get">
+        <div class="row g-3">
+
+            <!-- Category -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">Category</label>
+                <select name="category" id="category" class="form-select">
+                    <option value="">All</option>
+                    {% for c in categories %}
+                    <option value="{{ c.id }}" {% if request.GET.category == c.id|stringformat:"s" %}selected{% endif %}>
+                        {{ c.title }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Subcategory -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">Subcategory</label>
+                <select name="subcategory" id="subcategory" class="form-select">
+                    <option value="">All</option>
+                    {% for s in subcategories %}
+                    <option value="{{ s.id }}" {% if request.GET.subcategory == s.id|stringformat:"s" %}selected{% endif %}>
+                        {{ s.title }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Location -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">Location</label>
+                <select name="location" class="form-select">
+                    <option value="">All</option>
+                    {% for l in locations %}
+                    <option value="{{ l.id }}" {% if request.GET.location == l.id|stringformat:"s" %}selected{% endif %}>
+                        {{ l.location }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Department -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">Department</label>
+                <select name="department" class="form-select">
+                    <option value="">All</option>
+                    {% for d in departments %}
+                    <option value="{{ d.id }}" {% if request.GET.department == d.id|stringformat:"s" %}selected{% endif %}>
+                        {{ d.title }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Condition -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">Condition</label>
+                <select name="condition" class="form-select">
+                    <option value="">All</option>
+                    {% for c,v in conditions %}
+                    <option value="{{ c }}" {% if request.GET.condition == c %}selected{% endif %}>{{ v }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Purchase Date From -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">Purchase Date From</label>
+                <input type="date" name="date_from" value="{{ request.GET.date_from }}" class="form-control" onkeydown="return false">
+            </div>
+
+            <!-- Purchase Date To -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">To</label>
+                <input type="date" name="date_to" value="{{ request.GET.date_to }}" class="form-control" onkeydown="return false">
+            </div>
+
+            <!-- Submit -->
+            <div class="col-12 col-md-6 col-lg-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Filter</button>
+            </div>
+
+        </div>
+    </form>
+
+    <!-- Upload Excel -->
+    <form action="{% url 'asset_report' %}" method="POST" enctype="multipart/form-data" class="mt-3">
+        {% csrf_token %}
+        <label class="fw-bold">Upload Excel File</label>
+        <input type="file" name="excel_file" class="form-control w-25" required>
+        <button type="submit" class="btn btn-success mt-2">Upload Excel</button>
+    </form>
+
+    <!-- Download Buttons -->
+    <div class="text-end pb-3 d-flex gap-2 justify-content-end mt-2">
+        <a href="{% url 'download_asset_report_excel' %}?{{ request.GET.urlencode }}" class="btn btn-success">Download Excel</a>
+        <a href="{% url 'download_asset_report_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-danger">Download PDF</a>
+        <a href="{% url 'asset_report' %}" class="btn btn-secondary">Reset</a>
+    </div>
+
+    <!-- Asset Table -->
+    <div class="table-responsive mt-4">
+        <table class="table table-bordered mt-4">
+            <thead>
+                <tr>
+                    <th>Serial No.</th>
+                    <th>Asset Name</th>
+                    <th>Category</th>
+                    <th>Subcategory</th>
+                    <th>Department</th>
+                    <th>Location</th>
+                    <th>Condition</th>
+                    <th>Purchase Date</th>
+                    <th>Warranty Expiry</th>
+                    <th>Assigned To</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in assets %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ a.assetname }}</td>
+                    <td>{{ a.category }}</td>
+                    <td>{{ a.subcategory }}</td>
+                    <td>{{ a.department }}</td>
+                    <td>{{ a.location }}</td>
+                    <td>{{ a.condition }}</td>
+                    <td>{{ a.purchase_date }}</td>
+                    <td>{{ a.warrenty_expiry }}</td>
+                    <td>{{ a.assigned_to }}</td>
+                    <td>{{ a.remarks }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="11">No assets found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Uploaded Excel Preview -->
+    {% if uploaded_data %}
+    <div class="mt-4">
+        <h3 class="fw-bold">Uploaded Excel Preview</h3> 
+        <div class="table-responsive">
+            <table class="table table-bordered text-center">
+                <thead class="table-secondary">
+                    <tr>
+                        {% for head in uploaded_data.0 %}
+                        <th>{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for row in uploaded_data %}
+                    <tr>
+                        {% for cell in row %}
+                        <td>{{ cell }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- AJAX Subcategory Load -->
+<script>
+    $('#category').change(function() {
+        var categoryId = $(this).val();
+        $.ajax({
+            url: "{% url 'ajax_load_subcategories' %}",
+            data: { 'category_id': categoryId },
+            success: function(data) {
+                $("#subcategory").html('<option value="">All</option>');
+                $.each(data, function(index, subcat) {
+                    $("#subcategory").append(
+                        '<option value="' + subcat.id + '">' + subcat.title + '</option>'
+                    );
+                });
+            }
+        });
+    });
+</script>
+
+{% endblock %}
+
+ {% comment %} {% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="text-center fw-bold mb-4">Asset Report</h2>
+
+    <!-- Search Form -->
+    <form method="get" class="mb-3 text-end">
+        <input type="text" name="search" value="{{ search }}" placeholder="Search assets..."
+               class="form-control" style="max-width:200px; display:inline-block;">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <!-- Back Button -->
+    <div class="text-end pb-3">
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-primary">Back</a>
+    </div>
+
+    <!-- Filter Form -->
+    <form method="get">
+        <div class="row g-3">
+
+            <!-- Category -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">Category</label>
+                <select name="category" id="category" class="form-select">
+                    <option value="">All</option>
+                    {% for c in categories %}
+                    <option value="{{ c.id }}" {% if request.GET.category == c.id|stringformat:"s" %}selected{% endif %}>
+                        {{ c.title }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Subcategory -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">Subcategory</label>
+                <select name="subcategory" id="subcategory" class="form-select">
+                    <option value="">All</option>
+                    {% for s in subcategories %}
+                    <option value="{{ s.id }}" {% if request.GET.subcategory == s.id|stringformat:"s" %}selected{% endif %}>
+                        {{ s.title }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Location -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">Location</label>
+                <select name="location" class="form-select">
+                    <option value="">All</option>
+                    {% for l in locations %}
+                    <option value="{{ l.id }}" {% if request.GET.location == l.id|stringformat:"s" %}selected{% endif %}>
+                        {{ l.location }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Department -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">Department</label>
+                <select name="department" class="form-select">
+                    <option value="">All</option>
+                    {% for d in departments %}
+                    <option value="{{ d.id }}" {% if request.GET.department == d.id|stringformat:"s" %}selected{% endif %}>
+                        {{ d.title }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Condition -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">Condition</label>
+                <select name="condition" class="form-select">
+                    <option value="">All</option>
+                    {% for c,v in conditions %}
+                    <option value="{{ c }}" {% if request.GET.condition == c %}selected{% endif %}>{{ v }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Purchase Date From -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">Purchase Date From</label>
+                <input type="date" name="date_from" value="{{ request.GET.date_from }}" class="form-control" onkeydown="return false">
+            </div>
+
+            <!-- Purchase Date To -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">To</label>
+                <input type="date" name="date_to" value="{{ request.GET.date_to }}" class="form-control" onkeydown="return false">
+            </div>
+
+            <!-- Submit -->
+            <div class="col-12 col-md-6 col-lg-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Filter</button>
+            </div>
+
+        </div>
+    </form>
+
+    <!-- Upload Excel -->
+    <form action="{% url 'asset_report' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label class="fw-bold">Upload Excel File</label>
+        <input type="file" name="excel_file" class="form-control w-25" required>
+        <button type="submit" class="btn btn-success mt-2">Upload Excel</button>
+    </form>
+
+    <!-- Download Buttons -->
+    <div class="text-end pb-3 d-flex gap-2 justify-content-end mt-2">
+        <a href="{% url 'download_asset_report_excel' %}?{{ request.GET.urlencode }}" class="btn btn-success">Download Excel</a>
+        <a href="{% url 'download_asset_report_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-danger">Download PDF</a>
+        <a href="{% url 'asset_report' %}" class="btn btn-secondary">Reset</a>
+    </div>
+
+    <!-- Asset Table -->
+    <div class="table-responsive mt-4">
+        <table class="table table-bordered mt-4">
+            <thead>
+                <tr>
+                    <th>Serial No.</th>
+                    <th>Asset Name</th>
+                    <th>Category</th>
+                    <th>Subcategory</th>
+                    <th>Department</th>
+                    <th>Location</th>
+                    <th>Condition</th>
+                    <th>Purchase Date</th>
+                    <th>Warranty Expiry</th>
+                    <th>Assigned To</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in assets %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ a.assetname }}</td>
+                    <td>{{ a.category }}</td>
+                    <td>{{ a.subcategory }}</td>
+                    <td>{{ a.department }}</td>
+                    <td>{{ a.location }}</td>
+                    <td>{{ a.condition }}</td>
+                    <td>{{ a.purchase_date }}</td>
+                    <td>{{ a.warrenty_expiry }}</td>
+                    <td>{{ a.assigned_to }}</td>
+                    <td>{{ a.remarks }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="11">No assets found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Uploaded Excel Preview -->
+    {% if uploaded_data %}
+    <div class="mt-4">
+        <h3 class="fw-bold">Uploaded Excel Preview</h3> 
+        <div class="table-responsive">
+            <table class="table table-bordered text-center">
+                <thead class="table-secondary">
+                    <tr>
+                        {% for head in uploaded_data.0 %}
+                        <th>{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for row in uploaded_data %}
+                    <tr>
+                        {% for cell in row %}
+                        <td>{{ cell }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- AJAX Subcategory Load -->
+<script>
+    $('#category').change(function() {
+        var categoryId = $(this).val();
+        $.ajax({
+            url: "{% url 'ajax_load_subcategories' %}",
+            data: { 'category_id': categoryId },
+            success: function(data) {
+                $("#subcategory").html('<option value="">All</option>');
+                $.each(data, function(index, subcat) {
+                    $("#subcategory").append(
+                        '<option value="' + subcat.id + '">' + subcat.title + '</option>'
+                    );
+                });
+            }
+        });
+    });
+</script>
+
+{% endblock %} {% endcomment %}
+ 
+ {% comment %} {% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="text-center fw-bold mb-4">Asset Report</h2>
+
+    <!-- Search Form -->
+    <form method="get" class="mb-3 text-end">
+        <input type="text" name="search" value="{{ search }}" placeholder="Search assets..."
+               class="form-control" style="max-width:200px; display:inline-block;">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <!-- Back Button -->
+    <div class="text-end pb-3">
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-primary">Back</a>
+    </div>
+
+    <!-- Filter Form -->
+    <form method="get">
+        <div class="row g-3">
+
+            <!-- Category -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">Category</label>
+                <select name="category" id="category" class="form-select">
+                    <option value="">All</option>
+                    {% for c in categories %}
+                    <option value="{{ c.id }}" {% if request.GET.category == c.id|stringformat:"s" %}selected{% endif %}>
+                        {{ c.title }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Subcategory -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">Subcategory</label>
+                <select name="subcategory" id="subcategory" class="form-select">
+                    <option value="">All</option>
+                    {% for s in subcategories %}
+                    <option value="{{ s.id }}" {% if request.GET.subcategory == s.id|stringformat:"s" %}selected{% endif %}>
+                        {{ s.title }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Location -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">Location</label>
+                <select name="location" class="form-select">
+                    <option value="">All</option>
+                    {% for l in locations %}
+                    <option value="{{ l.id }}" {% if request.GET.location == l.id|stringformat:"s" %}selected{% endif %}>
+                        {{ l.location }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Department -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">Department</label>
+                <select name="department" class="form-select">
+                    <option value="">All</option>
+                    {% for d in departments %}
+                    <option value="{{ d.id }}" {% if request.GET.department == d.id|stringformat:"s" %}selected{% endif %}>
+                        {{ d.title }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Condition -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">Condition</label>
+                <select name="condition" class="form-select">
+                    <option value="">All</option>
+                    {% for c,v in conditions %}
+                    <option value="{{ c }}" {% if request.GET.condition == c %}selected{% endif %}>{{ v }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Purchase Date From -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">Purchase Date From</label>
+                <input type="date" name="date_from" value="{{ request.GET.date_from }}" class="form-control" onkeydown="return false">
+            </div>
+
+            <!-- Purchase Date To -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">To</label>
+                <input type="date" name="date_to" value="{{ request.GET.date_to }}" class="form-control" onkeydown="return false">
+            </div>
+
+            <!-- Submit -->
+            <div class="col-12 col-md-6 col-lg-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Filter</button>
+            </div>
+
+        </div>
+    </form>
+
+    <!-- Export Excel -->
+   <form action="{% url 'asset_report' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label class="fw-bold">Upload Excel File</label>
+    <input type="file" name="excel_file" class="form-control w-25" required>
+    <button type="submit" class="btn btn-success mt-2">Upload Excel</button>
+</form>
+
+
+    <!-- Download Buttons -->
+    <div class="text-end pb-3 d-flex gap-2 justify-content-end mt-2">
+        <a href="{% url 'download_asset_report_excel' %}?{{ request.GET.urlencode }}" class="btn btn-success">Download Excel</a>
+        <a href="{% url 'download_asset_report_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-danger">Download PDF</a>
+        <a href="{% url 'asset_report' %}" class="btn btn-secondary">Reset</a>
+    </div>
+
+    <!-- Asset Table -->
+    <div class="table-responsive mt-4">
+        <table class="table table-bordered mt-4">
+            <thead>
+                <tr>
+                    <th>Serial No.</th>
+                    <th>Asset Name</th>
+                    <th>Category</th>
+                    <th>Subcategory</th>
+                    <th>Department</th>
+                    <th>Location</th>
+                    <th>Condition</th>
+                    <th>Purchase Date</th>
+                    <th>Warranty Expiry</th>
+                    <th>Assigned To</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in assets %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ a.assetname }}</td>
+                    <td>{{ a.category }}</td>
+                    <td>{{ a.subcategory }}</td>
+                    <td>{{ a.department }}</td>
+                    <td>{{ a.location }}</td>
+                    <td>{{ a.condition }}</td>
+                    <td>{{ a.purchase_date }}</td>
+                    <td>{{ a.warrenty_expiry }}</td>
+                    <td>{{ a.assigned_to }}</td>
+                    <td>{{ a.remarks }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="11">No assets found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Excel Preview -->
+    {% if excel_table %}
+    <div class="mt-4">
+        <h3 class="fw-bold">Imported Excel Preview</h3>
+        <div class="table-responsive">
+            <table class="table table-bordered text-center">
+                <thead class="table-secondary">
+                    <tr>
+                        {% for head in excel_table.0 %}
+                        <th>{{ head }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in excel_table %}
+                    <tr>
+                        {% for cell in row %}
+                        <td>{{ cell }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- AJAX for dynamic subcategory -->
+<script>
+    $('#category').change(function() {
+        var categoryId = $(this).val();
+        $.ajax({
+            url: "{% url 'ajax_load_subcategories' %}",
+            data: { 'category_id': categoryId },
+            success: function(data) {
+                $("#subcategory").html('<option value="">All</option>');
+                $.each(data, function(index, subcat) {
+                    $("#subcategory").append(
+                        '<option value="' + subcat.id + '">' + subcat.title + '</option>'
+                    );
+                });
+            }
+        });
+    });
+</script>
+
+{% endblock %} {% endcomment %}
+
+{% comment %} {% extends 'base.html' %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -134,6 +778,13 @@
         </div>
     </form>
 
+   <form action="{% url 'export_excel' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="excel_file" required>
+    <button type="submit" class="btn btn-success">Export Excel</button>
+   
+
+</form>
 
     <div class="text-end pb-3 d-flex gap-2 justify-content-end">
     <a href="{% url 'download_asset_report_excel' %}?{{ request.GET.urlencode }}" 
@@ -197,6 +848,35 @@
 
 </div>
 
+{% if excel_table %}
+<div class="mt-4">
+    <h3 class="fw-bold">Imported Excel Preview</h3>
+
+    <div class="table-responsive">
+        <table class="table table-bordered text-center">
+            <thead class="table-secondary">
+                <tr>
+                    {% for head in excel_table.0 %}
+                    <th>{{ head }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for row in excel_table %}
+                <tr>
+                    {% for cell in row %}
+                    <td>{{ cell }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+
 <!-- AJAX for dynamic subcategory -->
 <script>
     $('#category').change(function() {
@@ -220,7 +900,23 @@
 
 </body>
 </html>
-{% endblock %} {% endcomment %}
+{% endblock %}  
+
+
+{% if excel_table %}
+<h3>Imported Excel Preview</h3>
+<table border="1" class="table table-bordered">
+    {% for row in excel_table %}
+    <tr>
+        {% for cell in row %}
+        <td>{{ cell }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+{% endif %} {% endcomment %}
+
+
 
  {% comment %} {% extends 'base.html' %}
 {% block content %}

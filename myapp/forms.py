@@ -121,10 +121,11 @@ class AssetCreateForm(forms.ModelForm):
 
     assetname = forms.CharField(
         max_length=30,
+        label="Asset Label ",
         validators=[
             MinLengthValidator(2,message='Minimum 2 charecters required. '),
             RegexValidator(
-                regex=r'^[A-Za-z ]+$',
+                regex=r'^[A-Za-z0-9 ]+$',
                 message='Only letters and spaces are allowed.'
             )
         ]
@@ -133,6 +134,7 @@ class AssetCreateForm(forms.ModelForm):
 
     make = forms.CharField(
         max_length=10,
+        label="Make/Model/Serial No",
         validators=[
             MinLengthValidator(2, message='Minimum 2 characters required.'),
             RegexValidator(
@@ -154,6 +156,8 @@ class AssetCreateForm(forms.ModelForm):
         ]
     )
 
+    
+
     class Meta:
         model = AssetCreate
         fields = [
@@ -162,12 +166,20 @@ class AssetCreateForm(forms.ModelForm):
             'condition','file', 'remarks',
         ]
 
+        labels = {
+        'description': 'Product Details',
+    }
+
         widgets = {
             'purchase_date': forms.DateInput(attrs={'type': 'date'}),
             'warrenty_expiry': forms.DateInput(attrs={'type': 'date'}),
             'remarks': forms.Textarea(attrs={'rows': 5}),
             'description': forms.Textarea(attrs={'rows': 5}),
+
+            
+            'file': forms.FileInput(attrs={'class': 'form-control'}),
         }
+        
 
     # 👇 This is the function that filters subcategories based on selected category
     def __init__(self, *args, **kwargs):

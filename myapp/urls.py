@@ -48,7 +48,7 @@ urlpatterns = [
     path('locations/toggle/<int:pk>/', views.toggle_locations_status, name='toggle_locations_status'),
    
     path('users/', views.users_view, name='users'),
-    path('add_user/', views.add_user, name='add_user'),
+    path('add_user/', views.add_user, name='add_user'), 
     path('edit_user/<int:user_id>/', views.edit_user, name='edit_user'),
     path('delete_user/<int:user_id>/', views.delete_user, name='delete_user'),
 
@@ -70,8 +70,9 @@ urlpatterns = [
 
     path('reports/download/excel/', views.download_asset_report_excel, name='download_asset_report_excel'),
     path('reports/download/pdf/', views.download_asset_report_pdf, name='download_asset_report_pdf'),
+    
+    path('report/', views.asset_report, name='asset_report'),
 
-  
-
+    
 
 ]
